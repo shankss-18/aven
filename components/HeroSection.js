@@ -89,10 +89,10 @@ export default function HeroSection() {
             </svg>
           </Link>
           <Link
-            href="/products/1"
+            href="/products"
             className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-[13.5px] font-semibold bg-transparent text-[#0e0e0c] border border-[#c9c4b3] hover:border-[#0e0e0c] hover:bg-[#f5f3ea] transition-all duration-200"
           >
-            View Ridge Runner →
+            Explore Catalog →
           </Link>
         </div>
 

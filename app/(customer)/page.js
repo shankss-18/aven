@@ -4,55 +4,15 @@ import HeroSection from "@/components/HeroSection";
 import HomeProductSections from "@/components/HomeProductSections";
 import db from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata = {
   title: "AVEN — Premium Sneakers & Footwear for Men",
   description:
     "Discover premium men's sneakers, Chelsea boots, and high-tops at AVEN. Considered footwear crafted with care, built to last.",
   alternates: { canonical: "/" },
 };
-
-const FALLBACK_PRODUCTS = [
-  {
-    id: 1,
-    name: "Ridge Runner Sneaker",
-    category: "sneaker",
-    sub: "Sneaker · Men",
-    price: 6499,
-    base_price: 649900,
-    image_url: "/products/ridge-runner.jpg",
-    tileBg: "bg-[#eae5d5]",
-  },
-  {
-    id: 2,
-    name: "Stealth Court Sneaker",
-    category: "sneaker",
-    sub: "Sneaker · Men",
-    price: 5999,
-    base_price: 599900,
-    image_url: "/products/stealth-court.jpg",
-    tileBg: "bg-[#e3dfd0]",
-  },
-  {
-    id: 3,
-    name: "Urban Trail Sneaker",
-    category: "sneaker",
-    sub: "Trainer · Men",
-    price: 7199,
-    base_price: 719900,
-    image_url: "/products/urban-trail.jpg",
-    tileBg: "bg-[#dfe2dc]",
-  },
-  {
-    id: 4,
-    name: "Highland Chelsea Boot",
-    category: "boot",
-    sub: "Boot · Men",
-    price: 8999,
-    base_price: 899900,
-    image_url: "/products/highland-chelsea.jpg",
-    tileBg: "bg-[#ece3d8]",
-  },
-];
 
 async function getRecentProducts() {
   try {
@@ -61,26 +21,28 @@ async function getRecentProducts() {
       args: [],
     });
 
-    if (result && result.rows && result.rows.length > 0) {
-      return result.rows.map((row, index) => {
-        const fallback = FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length];
+    if (result && result.rows) {
+      if (result.rows.length === 0) {
+        return [];
+      }
+      return result.rows.map((row) => {
         const categoryLabel = row.category
           ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
           : "Footwear";
         const rawPrice = Number(row.base_price) || 0;
         // In DB, base_price is stored in paise (1 INR = 100 paise)
-        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : fallback.price;
-        const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
+        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : 0;
+        const cleanName = row.name ? row.name.split(" | ")[0].trim() : "Footwear";
 
         return {
           id: row.id,
           name: cleanName,
-          category: row.category || fallback.category,
+          category: row.category || "footwear",
           sub: `${categoryLabel} · Men`,
           price: priceInRupees,
-          base_price: rawPrice || fallback.base_price,
-          image_url: row.image_url || fallback.image_url,
-          tileBg: fallback.tileBg || "bg-[#eae5d5]",
+          base_price: rawPrice,
+          image_url: row.image_url || "",
+          tileBg: "bg-[#eae5d5]",
         };
       });
     }
@@ -88,7 +50,7 @@ async function getRecentProducts() {
     console.warn("Could not query recent products:", error);
   }
 
-  return FALLBACK_PRODUCTS;
+  return [];
 }
 
 async function getOfferProducts() {
@@ -103,26 +65,28 @@ async function getOfferProducts() {
       args: [],
     });
 
-    if (result && result.rows && result.rows.length > 0) {
-      return result.rows.map((row, index) => {
-        const fallback = FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length];
+    if (result && result.rows) {
+      if (result.rows.length === 0) {
+        return [];
+      }
+      return result.rows.map((row) => {
         const categoryLabel = row.category
           ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
           : "Footwear";
         const rawPrice = Number(row.base_price) || 0;
         // In DB, base_price is stored in paise (1 INR = 100 paise)
-        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : fallback.price;
-        const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
+        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : 0;
+        const cleanName = row.name ? row.name.split(" | ")[0].trim() : "Footwear";
 
         return {
           id: row.id,
           name: cleanName,
-          category: row.category || fallback.category,
+          category: row.category || "footwear",
           sub: `${categoryLabel} · Special`,
           price: priceInRupees,
-          base_price: rawPrice || fallback.base_price,
-          image_url: row.image_url || fallback.image_url,
-          tileBg: fallback.tileBg || "bg-[#eae5d5]",
+          base_price: rawPrice,
+          image_url: row.image_url || "",
+          tileBg: "bg-[#eae5d5]",
         };
       });
     }
@@ -130,7 +94,7 @@ async function getOfferProducts() {
     console.warn("Could not query offer products:", error);
   }
 
-  return FALLBACK_PRODUCTS;
+  return [];
 }
 
 export default async function CustomerHomePage() {

@@ -217,52 +217,65 @@ export default function HomeProductSections({
           </ScrollReveal>
 
           {/* Grid: 2 cards side-by-side on mobile, 2 on sm, 4 on lg */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
-            {recentProducts.map((product, index) => renderProductCard(product, index))}
-          </div>
+          {recentProducts.length === 0 ? (
+            <div className="py-14 text-center border border-dashed border-[#e4e0d2] rounded-2xl p-8 bg-[#fcfbf9]">
+              <p className="text-[14px] font-semibold text-[#0e0e0c] mb-1">
+                No products found in catalog
+              </p>
+              <p className="text-[12px] text-[#8f8a7a]">
+                New collection arriving soon. Please check back later.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
+              {recentProducts.map((product, index) => renderProductCard(product, index))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* ================= SECTION 2: OFFERS PRODUCT ================= */}
-      <section className="w-full px-6 sm:px-10 lg:px-16 py-14 lg:py-20 bg-white border-t border-[#e4e0d2]">
-        <div className="w-full">
-          <ScrollReveal delay={0} y={20}>
-            <div className="flex items-center justify-between mb-8">
-              <div className="font-['Space_Grotesk'] text-[24px] font-semibold text-[#0e0e0c] flex items-center gap-4">
-                <span>Offers</span>
-                <div className="stitch" />
+      {offerProducts.length > 0 && (
+        <section className="w-full px-6 sm:px-10 lg:px-16 py-14 lg:py-20 bg-white border-t border-[#e4e0d2]">
+          <div className="w-full">
+            <ScrollReveal delay={0} y={20}>
+              <div className="flex items-center justify-between mb-8">
+                <div className="font-['Space_Grotesk'] text-[24px] font-semibold text-[#0e0e0c] flex items-center gap-4">
+                  <span>Offers</span>
+                  <div className="stitch" />
+                </div>
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold border border-[#e4e0d2] text-[#0e0e0c] bg-white hover:border-[#0e0e0c] transition-colors"
+                >
+                  View all
+                </Link>
               </div>
+            </ScrollReveal>
+
+            {/* Grid: 2 cards side-by-side on mobile, 2 on sm, 4 on lg */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
+              {offerProducts.map((product, index) => renderProductCard(product, index))}
+            </div>
+
+            {/* Centered Explore More button at the bottom of the section */}
+            <div className="flex justify-center mt-10 sm:mt-12">
               <Link
                 href="/products"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold border border-[#e4e0d2] text-[#0e0e0c] bg-white hover:border-[#0e0e0c] transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full text-[13px] font-semibold bg-[#0e0e0c] text-[#f2efe6] hover:bg-[#2b2506] transition-colors shadow-xs"
               >
-                View all
+                <span>Explore More</span>
+                <svg
+                  className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
-          </ScrollReveal>
-
-          {/* Grid: 2 cards side-by-side on mobile, 2 on sm, 4 on lg */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
-            {offerProducts.map((product, index) => renderProductCard(product, index))}
           </div>
-
-          {/* Centered Explore More button at the bottom of the section */}
-          <div className="flex justify-center mt-10 sm:mt-12">
-            <Link
-              href="/products"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full text-[13px] font-semibold bg-[#0e0e0c] text-[#f2efe6] hover:bg-[#2b2506] transition-colors shadow-xs"
-            >
-              <span>Explore More</span>
-              <svg
-                className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]"
-                viewBox="0 0 24 24"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
