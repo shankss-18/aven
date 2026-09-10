@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVEN — Premium Footwear for Men</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e0e0c;
+  --ink-soft:#3a382f;
+  --paper:#f2efe6;
+  --panel:#ffffff;
+  --line:#e4e0d2;
+  --stone:#8f8a7a;
+  --stone-light:#c9c4b3;
+  --accent:#e7c94a;
+  --accent-ink:#2b2506;
+  --success:#3f6b46;
+  --success-bg:#e7efe3;
+  --danger:#b5482f;
+  --danger-bg:#f7e7e1;
+  --radius-lg:22px;
+  --radius-md:14px;
+  --radius-sm:8px;
+  --shadow-card:0 1px 2px rgba(14,14,12,0.04);
+  --font-display:'Space Grotesk',Arial,sans-serif;
+  --font-body:'Inter',Arial,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  font-size:14px;
+  line-height:1.5;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+img{max-width:100%;display:block;}
+::selection{background:var(--accent);color:var(--accent-ink);}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important;}
+}
+
+/* ---------- App shell / prototype rail ---------- */
+.app{
+  display:flex;
+  min-height:100vh;
+}
+.rail{
+  width:84px;
+  flex:none;
+  background:var(--ink);
+  color:#ece8da;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:22px 0;
+  gap:6px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+.rail-mark{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:0.02em;
+  margin-bottom:18px;
+  color:var(--accent);
+}
+.stitch{
+  width:34px;
+  height:2px;
+  background-image:linear-gradient(90deg,#5a5744 0 6px, transparent 6px 10px);
+  background-size:10px 2px;
+  margin:8px 0 16px;
+  opacity:0.7;
+}
+.rail-btn{
+  width:60px;
+  padding:9px 4px 8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  background:transparent;
+  border:none;
+  color:#a8a394;
+  border-radius:var(--radius-sm);
+  font-size:10px;
+  letter-spacing:0.02em;
+  text-align:center;
+}
+.rail-btn svg{width:18px;height:18px;stroke:#a8a394;fill:none;stroke-width:1.6;}
+.rail-btn.active{background:#1c1b16;color:#f2efe6;}
+.rail-btn.active svg{stroke:var(--accent);}
+.rail-btn:hover{color:#e5e1d2;}
+.rail-btn:hover svg{stroke:#e5e1d2;}
+
+.stage{
+  flex:1;
+  padding:34px 40px 60px;
+  overflow-x:hidden;
+}
+.stage-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  max-width:1180px;
+  margin:0 auto 18px;
+}
+.stage-head h1{
+  font-family:var(--font-display);
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:var(--stone);
+}
+.stage-head span{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--stone-light);
+}
+.canvas{
+  max-width:1180px;
+  margin:0 auto;
+  background:var(--panel);
+  border-radius:var(--radius-lg);
+  box-shadow:0 20px 60px -30px rgba(14,14,12,0.35), var(--shadow-card);
+  overflow:hidden;
+  border:1px solid var(--line);
+}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ---------- Shared: store top nav ---------- */
+.store-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px 40px;
+  border-bottom:1px solid var(--line);
+}
+.logo{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:0.01em;
+}
+.logo em{font-style:normal;color:var(--accent-ink);background:var(--accent);padding:0 4px;border-radius:3px;}
+.store-links{
+  display:flex;
+  gap:28px;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+.store-links a.on{color:var(--danger);}
+.store-search{
+  flex:none;
+  width:280px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--paper);
+  border-radius:999px;
+  padding:9px 16px;
+  color:var(--stone);
+  font-size:13px;
+}
+.store-search svg{width:15px;height:15px;stroke:var(--stone);fill:none;stroke-width:1.6;flex:none;}
+.store-actions{display:flex;align-items:center;gap:20px;}
+.icon-btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--ink-soft);}
+.icon-btn svg{width:19px;height:19px;stroke:var(--ink);fill:none;stroke-width:1.5;}
+.icon-badge{
+  position:absolute;top:-6px;right:-10px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--font-mono);font-size:9px;font-weight:600;
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#cfc9b3,#8f8a7a);}
+
+.crumb{
+  padding:16px 40px 0;
+  font-size:12px;
+  color:var(--stone);
+}
+.crumb b{color:var(--ink);font-weight:500;}
+
+/* ---------- buttons / inputs shared ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 22px;border-radius:999px;font-size:13px;font-weight:600;
+  border:1px solid var(--ink);letter-spacing:0.01em;
+  transition:transform .12s ease, background .12s ease;
+}
+.btn-primary{background:var(--ink);color:var(--paper);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--ink);}
+.btn-ghost:hover{background:var(--paper);}
+.btn-outline{background:var(--panel);color:var(--ink);border:1px solid var(--line);}
+.btn-outline:hover{border-color:var(--ink);}
+.btn-sq{width:48px;height:48px;border-radius:var(--radius-sm);padding:0;}
+.btn-block{width:100%;}
+.btn[disabled]{opacity:0.4;cursor:not-allowed;transform:none!important;}
+
+label.field{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--stone);margin-bottom:7px;}
+.input, select.input{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);
+  font-family:inherit;font-size:13.5px;background:var(--panel);color:var(--ink);
+}
+.input:focus, select.input:focus{border-color:var(--ink);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.field-block{margin-bottom:16px;}
+
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:999px;font-weight:600;letter-spacing:0.02em;}
+.badge-gold{background:var(--accent);color:var(--accent-ink);}
+.badge-success{background:var(--success-bg);color:var(--success);}
+.badge-warn{background:#f6ecd6;color:#8a6512;}
+.badge-danger{background:var(--danger-bg);color:var(--danger);}
+.badge-line{background:var(--paper);color:var(--ink-soft);border:1px solid var(--line);}
+
+.section-title{
+  font-family:var(--font-display);font-size:22px;font-weight:600;
+  display:flex;align-items:center;gap:14px;margin-bottom:4px;
+}
+.section-title .stitch{margin:0;flex:1;}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--stone);margin-bottom:8px;display:block;}
+
+/* ---------- shoe glyphs ---------- */
+.glyph-tile{
+  border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.glyph-tile svg{width:62%;stroke:var(--ink);fill:none;stroke-width:1.3;}
+.glyph-tile.t1{background:#eae5d5;}
+.glyph-tile.t2{background:#e3dfd0;}
+.glyph-tile.t3{background:#dfe2dc;}
+.glyph-tile.t4{background:#ece3d8;}
+.glyph-tile.t5{background:#e6e6de;}
+.glyph-tile.t6{background:#e1ded1;}
+.wish-dot{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;}
+.wish-dot svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:1.6;}
+.wish-dot.filled svg{fill:var(--danger);stroke:var(--danger);}
+
+/* ================= HOME ================= */
+.hero{
+  display:grid;grid-template-columns:1.05fr 1fr;gap:0;border-bottom:1px solid var(--line);
+}
+.hero-copy{padding:56px 44px;display:flex;flex-direction:column;justify-content:center;gap:18px;}
+.hero-copy h2{font-family:var(--font-display);font-size:42px;line-height:1.05;font-weight:600;}
+.hero-copy p{color:var(--ink-soft);max-width:380px;font-size:14.5px;}
+.hero-cta{display:flex;gap:12px;margin-top:6px;}
+.hero-visual{
+  background:linear-gradient(160deg,#e9e4d3,#d7d3c1);
+  display:flex;align-items:center;justify-content:center;padding:30px;position:relative;
+}
+.hero-visual svg{width:78%;stroke:var(--ink);fill:none;stroke-width:1.1;}
+.hero-tag{position:absolute;bottom:26px;left:26px;background:var(--panel);border-radius:var(--radius-md);padding:12px 16px;box-shadow:var(--shadow-card);font-size:12px;}
+.hero-tag b{display:block;font-family:var(--font-mono);font-size:14px;}
+
+.cat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line);}
+.cat-card{background:var(--panel);padding:26px 30px;display:flex;flex-direction:column;gap:8px;}
+.cat-card .n{font-family:var(--font-mono);font-size:11px;color:var(--stone);}
+.cat-card h3{font-family:var(--font-display);font-size:18px;}
+.cat-card a{font-size:12px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:4px;}
+
+.strip{padding:40px 44px;}
+.strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.pcard{display:flex;flex-direction:column;gap:10px;}
+.pcard .glyph-tile{aspect-ratio:1/1;}
+.pcard h4{font-size:13.5px;font-weight:600;}
+.pcard .meta{display:flex;align-items:center;justify-content:space-between;}
+.pcard .price{font-family:var(--font-mono);font-size:13.5px;}
+.pcard .sub{color:var(--stone);font-size:12px;}
+
+.story{
+  padding:40px 44px;background:var(--ink);color:#efeadb;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;
+}
+.story h3{font-family:var(--font-display);font-size:24px;margin-bottom:12px;}
+.story p{color:#c9c4b3;font-size:13.5px;max-width:420px;}
+.story-stats{display:flex;gap:34px;}
+.story-stats div b{font-family:var(--font-display);font-size:26px;display:block;color:var(--accent);}
+.story-stats div span{font-size:11px;color:#a8a394;text-transform:uppercase;letter-spacing:0.08em;}
+
+.store-footer{padding:36px 44px;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr 1fr;gap:24px;border-top:1px solid var(--line);}
+.store-footer h5{font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:var(--stone);margin-bottom:12px;}
+.store-footer a{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;}
+.store-footer .fmark{font-family:var(--font-display);font-weight:700;font-size:18px;margin-bottom:10px;}
+
+/* ================= PRODUCTS LISTING ================= */
+.listing{display:grid;grid-template-columns:230px 1fr;gap:36px;padding:26px 40px 44px;}
+.filters{border-right:1px solid var(--line);padding-right:26px;}
+.filter-group{margin-bottom:26px;}
+.filter-group h6{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--stone);margin-bottom:12px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--ink-soft);}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.opt-row{display:flex;align-items:center;gap:9px;margin-bottom:9px;font-size:13px;color:var(--ink-soft);}
+.opt-row input{accent-color:var(--ink);}
+.swatch-row{display:flex;gap:8px;}
+.swatch{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);}
+.range-track{height:3px;background:var(--line);border-radius:3px;position:relative;margin:16px 2px 8px;}
+.range-track .fill{position:absolute;left:15%;right:35%;top:0;bottom:0;background:var(--ink);border-radius:3px;}
+.range-track .knob{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);}
+.range-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--stone);}
+
+.listing-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.listing-top .count{font-size:12.5px;color:var(--stone);}
+.sort-select{display:flex;align-items:center;gap:8px;font-size:12.5px;border:1px solid var(--line);padding:9px 14px;border-radius:999px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:32px;}
+.page-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink-soft);}
+.page-num.on{background:var(--ink);color:var(--paper);}
+
+/* ================= PRODUCT DETAIL ================= */
+.pd{display:grid;grid-template-columns:1fr 1fr;gap:44px;padding:26px 40px 10px;}
+.pd-gallery-main{aspect-ratio:1/1;}
+.pd-thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px;}
+.pd-thumbs .glyph-tile{aspect-ratio:1/1;border:2px solid transparent;}
+.pd-thumbs .glyph-tile.on{border-color:var(--ink);}
+.pd-info .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.brand-dot{width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:11px;font-weight:700;}
+.pd-info h2{font-family:var(--font-display);font-size:26px;margin-bottom:8px;}
+.stars{color:var(--accent-ink);font-size:13px;letter-spacing:2px;}
+.pd-price{font-family:var(--font-mono);font-size:24px;margin:18px 0;}
+.opt-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px;}
+.opt-label b{color:var(--stone);text-transform:uppercase;letter-spacing:0.06em;font-size:11px;font-weight:500;}
+.color-row{display:flex;gap:10px;margin-bottom:22px;}
+.color-swatch{width:44px;height:44px;border-radius:var(--radius-sm);border:2px solid transparent;position:relative;}
+.color-swatch.on{border-color:var(--ink);}
+.size-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px;}
+.size-btn{padding:11px 0;text-align:center;border:1px solid var(--line);border-radius:var(--radius-sm);font-size:12.5px;}
+.size-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.size-guide{font-size:11.5px;color:var(--stone);text-decoration:underline;margin-bottom:22px;display:inline-block;}
+.pd-actions{display:flex;gap:12px;margin-bottom:16px;}
+.pd-ship{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);}
+.pd-ship svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.5;}
+
+.tabs{display:flex;gap:26px;padding:0 40px;border-bottom:1px solid var(--line);margin-top:24px;}
+.tab{padding:14px 2px;font-size:13px;color:var(--stone);border-bottom:2px solid transparent;}
+.tab.on{color:var(--ink);border-color:var(--ink);font-weight:600;}
+.reviews{padding:28px 40px 40px;display:grid;grid-template-columns:1fr 1.3fr;gap:44px;}
+.rscore{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.rscore b{font-family:var(--font-display);font-size:34px;}
+.rbar-row{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--stone);margin-bottom:6px;}
+.rbar-track{flex:1;height:6px;background:var(--line);border-radius:4px;overflow:hidden;}
+.rbar-fill{height:100%;background:var(--accent);}
+.review{padding:16px 0;border-bottom:1px solid var(--line);}
+.review .who{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.review .who .a{width:30px;height:30px;border-radius:50%;background:var(--stone-light);}
+.review .who b{font-size:13px;}
+.review .who span{font-size:11.5px;color:var(--stone);}
+.review p{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+
+.related{padding:10px 40px 44px;}
+
+/* ================= CART ================= */
+.cart-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;padding:30px 40px 44px;}
+.cart-item{display:grid;grid-template-columns:88px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);align-items:center;}
+.cart-item .glyph-tile{width:88px;height:88px;}
+.cart-item h4{font-size:14px;margin-bottom:4px;}
+.cart-item .opt{font-size:12px;color:var(--stone);margin-bottom:8px;}
+.qty-stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;}
+.qty-stepper button{width:28px;height:28px;background:none;border:none;font-size:15px;}
+.qty-stepper span{width:26px;text-align:center;font-family:var(--font-mono);font-size:12.5px;}
+.cart-item .right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.cart-item .price{font-family:var(--font-mono);font-size:14px;}
+.remove-link{font-size:11.5px;color:var(--stone);text-decoration:underline;}
+.summary-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);padding:26px;height:fit-content;}
+.summary-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:12px;color:var(--ink-soft);}
+.summary-row.total{font-size:16px;color:var(--ink);font-weight:700;border-top:1px solid var(--line);padding-top:14px;margin-top:6px;}
+.promo{display:flex;gap:8px;margin:18px 0;}
+.promo .input{flex:1;}
+
+/* ================= CHECKOUT ================= */
+.stepper{display:flex;align-items:center;gap:0;padding:26px 40px 6px;}
+.step{display:flex;align-items:center;gap:10px;color:var(--stone);}
+.step .dot{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11.5px;}
+.step.on{color:var(--ink);font-weight:600;}
+.step.on .dot, .step.done .dot{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.step-line{flex:1;height:1px;background:var(--line);margin:0 14px;}
+.checkout-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;padding:26px 40px 44px;}
+.checkout-step{display:none;}
+.checkout-step.active{display:block;}
+.mini-order-row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);}
+.mini-order-row .glyph-tile{width:52px;height:52px;flex:none;}
+.mini-order-row .g{flex:1;font-size:12.5px;}
+.mini-order-row .p{font-family:var(--font-mono);font-size:12.5px;}
+.pay-opts{display:flex;gap:10px;margin-bottom:18px;}
+.pay-opt{flex:1;border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;text-align:center;font-size:12.5px;}
+.pay-opt.on{border-color:var(--ink);background:var(--paper);}
+.review-block{border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;margin-bottom:14px;}
+.review-block .rh{display:flex;justify-content:space-between;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--stone);margin-bottom:8px;}
+.review-block .rh a{text-decoration:underline;color:var(--ink-soft);text-transform:none;letter-spacing:0;}
+.checkout-actions{display:flex;justify-content:space-between;margin-top:22px;}
+
+/* ================= ACCOUNT ================= */
+.account-wrap{display:grid;grid-template-columns:220px 1fr;gap:36px;padding:30px 40px 44px;}
+.account-nav a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;color:var(--ink-soft);margin-bottom:4px;}
+.account-nav a.on{background:var(--paper);color:var(--ink);font-weight:600;}
+.account-nav a svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;}
+.profile-card{display:flex;align-items:center;gap:18px;padding:22px;border:1px solid var(--line);border-radius:var(--radius-md);margin-bottom:26px;}
+.profile-card .av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#cfc9b3,#8f8a7a);}
+.profile-card h3{font-family:var(--font-display);font-size:17px;}
+.profile-card span{font-size:12.5px;color:var(--stone);}
+.addr-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;}
+.addr-card .top{display:flex;justify-content:space-between;margin-bottom:6px;}
+.mini-order{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);}
+.mini-order .l span{display:block;font-size:11.5px;color:var(--stone);}
+
+/* ================= WISHLIST ================= */
+.wishlist-wrap{padding:30px 40px 44px;}
+
+/* ================= ORDER CONFIRMATION ================= */
+.confirm-wrap{padding:60px 44px;max-width:640px;margin:0 auto;text-align:center;}
+.check-ring{width:74px;height:74px;border-radius:50%;background:var(--success-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
+.check-ring svg{width:32px;height:32px;stroke:var(--success);fill:none;stroke-width:2;}
+.confirm-wrap h2{font-family:var(--font-display);font-size:26px;margin-bottom:8px;}
+.confirm-wrap p{color:var(--stone);font-size:13.5px;margin-bottom:26px;}
+.confirm-meta{display:flex;justify-content:center;gap:40px;margin-bottom:30px;}
+.confirm-meta div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--stone);margin-bottom:4px;}
+.confirm-meta div b{font-family:var(--font-mono);font-size:14px;}
+.confirm-track{border:1px solid var(--line);border-radius:var(--radius-md);padding:20px 24px;text-align:left;margin-bottom:26px;}
+.timeline{display:flex;justify-content:space-between;margin-top:14px;position:relative;}
+.timeline:before{content:'';position:absolute;top:9px;left:8px;right:8px;height:2px;background:var(--line);}
+.tl-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;position:relative;z-index:1;}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--line);}
+.tl-step.done .tl-dot{background:var(--ink);border-color:var(--ink);}
+.tl-step span{font-size:10.5px;color:var(--stone);text-align:center;}
+.confirm-actions{display:flex;gap:12px;justify-content:center;}
+
+/* ================= ORDER MANAGEMENT ================= */
+.orders-wrap{padding:26px 40px 44px;}
+.order-row{display:grid;grid-template-columns:1fr auto auto auto auto;gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.order-row .oid{font-family:var(--font-mono);font-weight:600;}
+.order-row .odate{color:var(--stone);font-size:12px;}
+.order-detail{margin-top:8px;padding:24px;background:var(--paper);border-radius:var(--radius-md);display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+.order-detail h4{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--stone);margin-bottom:12px;}
+
+/* ================= LOGIN / SIGNUP ================= */
+.auth-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:560px;}
+.auth-visual{background:linear-gradient(160deg,#161510,#2b2820);color:#efeadb;padding:50px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.auth-visual svg{width:60%;stroke:#efeadb;fill:none;stroke-width:1;opacity:0.9;position:absolute;right:-40px;bottom:-20px;}
+.auth-quote{font-family:var(--font-display);font-size:20px;line-height:1.3;max-width:280px;}
+.auth-form-side{padding:50px 60px;display:flex;flex-direction:column;justify-content:center;}
+.auth-toggle{display:flex;background:var(--paper);border-radius:999px;padding:4px;margin-bottom:30px;width:fit-content;}
+.auth-toggle button{padding:9px 22px;border-radius:999px;background:none;border:none;font-size:12.5px;font-weight:600;color:var(--stone);}
+.auth-toggle button.on{background:var(--ink);color:var(--paper);}
+.auth-panel{display:none;}
+.auth-panel.active{display:block;}
+.auth-form-side h2{font-family:var(--font-display);font-size:24px;margin-bottom:6px;}
+.auth-form-side>p{color:var(--stone);font-size:13px;margin-bottom:26px;}
+.social-row{display:flex;gap:10px;margin:18px 0;}
+.divider{display:flex;align-items:center;gap:12px;color:var(--stone);font-size:11.5px;margin:18px 0;}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:var(--line);}
+.auth-foot{font-size:12.5px;color:var(--stone);margin-top:18px;text-align:center;}
+.auth-foot a{text-decoration:underline;color:var(--ink);}
+
+@media (max-width:900px){
+  .app{flex-direction:column;}
+  .rail{width:100%;height:auto;position:relative;flex-direction:row;overflow-x:auto;}
+  .hero,.story,.pd,.cart-wrap,.checkout-wrap,.listing,.account-wrap,.auth-wrap,.reviews,.order-detail{grid-template-columns:1fr;}
+  .grid-4,.grid-3{grid-template-columns:repeat(2,1fr);}
+  .store-footer{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ PROTOTYPE NAV RAIL ============ -->
+  <nav class="rail" id="rail">
+    <div class="rail-mark">A.</div>
+    <div class="stitch"></div>
+    <button class="rail-btn active" data-page="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10"/></svg>Home</button>
+    <button class="rail-btn" data-page="products"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7"/><rect x="14" y="4" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Shop</button>
+    <button class="rail-btn" data-page="detail"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>Product</button>
+    <button class="rail-btn" data-page="cart"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</button>
+    <button class="rail-btn" data-page="checkout"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>Checkout</button>
+    <button class="rail-btn" data-page="account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg>Account</button>
+    <button class="rail-btn" data-page="wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</button>
+    <button class="rail-btn" data-page="confirm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>Success</button>
+    <button class="rail-btn" data-page="orders"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>Orders</button>
+    <button class="rail-btn" data-page="auth"><svg viewBox="0 0 24 24"><path d="M15 3h4v18h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>Login</button>
+  </nav>
+
+  <main class="stage">
+    <div class="stage-head">
+      <h1 id="stageTitle">Home</h1>
+      <span>AVEN — UI Prototype · 10 screens</span>
+    </div>
+
+    <!-- shared SVG defs for shoe glyphs -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <g id="sneaker-glyph">
+          <path d="M3 34c0-4 3-6 7-8 6-3 10-8 14-13 3-3 6-4 9-3 1 3 0 6-2 8 6 1 11 4 14 9 2 3 3 6 1 9-2 2-6 3-11 3H10c-4 0-7-1-7-5z"/>
+          <path d="M14 20c3 1 6 1 9 0"/><path d="M20 15c2 2 5 3 8 3"/>
+          <path d="M8 30h30"/>
+        </g>
+        <g id="boot-glyph">
+          <path d="M12 6v16l-6 6c-2 2-3 4-3 7 0 3 2 4 5 4h26c3 0 5-1 5-4 0-3-2-5-5-6l-10-4V6z"/>
+          <path d="M12 12h14"/><path d="M9 33h30"/>
+          <path d="M20 22l7 6"/>
+        </g>
+      </defs>
+    </svg>
+
+    <div class="canvas">
+
+      <!-- ============================================================ HOME ============================================================ -->
+      <section class="page active" id="page-home">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links">
+            <a href="#" onclick="return go('products')">Sneakers</a>
+            <a href="#" onclick="return go('products')">Boots</a>
+            <a href="#" onclick="return go('products')">Trainers</a>
+            <a href="#">New Arrivals</a>
+            <a href="#" class="on">Sale</a>
+          </div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow">FW26 Collection</span>
+            <h2>Built for the ground you cover.</h2>
+            <p>Full-grain leather, reinforced stitching, and soles engineered for pavement and trail alike. Considered footwear, made to be worn in — not just worn.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="return go('products')">Shop the collection</button>
+              <button class="btn btn-ghost" onclick="return go('detail')">View Ridge Runner →</button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg>
+            <div class="hero-tag">Ridge Runner<b>$220.00</b></div>
+          </div>
+        </div>
+
+        <div class="cat-strip">
+          <div class="cat-card"><span class="n">01</span><h3>Sneakers</h3><a onclick="return go('products')" href="#">Shop 42 styles →</a></div>
+          <div class="cat-card"><span class="n">02</span><h3>Boots</h3><a onclick="return go('products')" href="#">Shop 26 styles →</a></div>
+          <div class="cat-card"><span class="n">03</span><h3>Trainers</h3><a onclick="return go('products')" href="#">Shop 18 styles →</a></div>
+        </div>
+
+        <div class="strip">
+          <div class="strip-head">
+            <div class="section-title">Best sellers<div class="stitch"></div></div>
+            <a href="#" onclick="return go('products')" class="btn btn-outline">View all</a>
+          </div>
+          <div class="grid-4">
+            <div class="pcard"><div class="glyph-tile t1"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg><div class="wish-dot"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4 onclick="return go('detail')" style="cursor:pointer">Ridge Runner</h4><div class="meta"><span class="sub">Sneaker · White</span><span class="price">$220</span></div></div>
+            <div class="pcard"><div class="glyph-tile t2"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg><div class="wish-dot"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Fieldworker Boot</h4><div class="meta"><span class="sub">Boot · Chestnut</span><span class="price">$340</span></div></div>
+            <div class="pcard"><div class="glyph-tile t3"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg><div class="wish-dot filled"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Cascade Trail</h4><div class="meta"><span class="sub">Trainer · Grey</span><span class="price">$260</span></div></div>
+            <div class="pcard"><div class="glyph-tile t4"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg><div class="wish-dot"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Waxed Derby Boot</h4><div class="meta"><span class="sub">Boot · Black</span><span class="price">$420</span></div></div>
+          </div>
+        </div>
+
+        <div class="story">
+          <div>
+            <span class="eyebrow" style="color:#a8a394">Craft</span>
+            <h3>Every pair passes through 34 hands before it reaches yours.</h3>
+            <p>Aven works with a single tannery in Léon and a small outsole partner in Maine. No seasonal filler drops — just a tight, considered line built to outlast its box.</p>
+          </div>
+          <div class="story-stats">
+            <div><b>34</b><span>Hands per pair</span></div>
+            <div><b>2</b><span>Manufacturing partners</span></div>
+            <div><b>8yr</b><span>Sole warranty</span></div>
+          </div>
+        </div>
+
+        <div class="store-footer">
+          <div><div class="fmark">AVEN.</div><p style="color:var(--stone);font-size:12.5px;max-width:200px;">Considered footwear for men, made to be worn in.</p></div>
+          <div><h5>Shop</h5><a href="#">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div><h5>Company</h5><a href="#">About</a><a href="#">Stores</a><a href="#">Craft</a></div>
+          <div><h5>Support</h5><a href="#">Help</a><a href="#">Delivery</a><a href="#">Returns</a></div>
+          <div><h5>Contact</h5><a href="#">+1 204 578 0492</a><a href="#">hello@aven.com</a></div>
+        </div>
+      </section>
+
+      <!-- ============================================================ PRODUCTS LISTING ============================================================ -->
+      <section class="page" id="page-products">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" class="on">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+        <div class="crumb">Clothes and shoes <b>›</b> <b>Sneakers</b></div>
+
+        <div class="listing">
+          <aside class="filters">
+            <div class="filter-group">
+              <h6>Category</h6>
+              <div class="opt-row"><input type="checkbox" checked><span>Sneakers (42)</span></div>
+              <div class="opt-row"><input type="checkbox"><span>Boots (26)</span></div>
+              <div class="opt-row"><input type="checkbox"><span>Trainers (18)</span></div>
+              <div class="opt-row"><input type="checkbox"><span>Chukka (9)</span></div>
+            </div>
+            <div class="filter-group">
+              <h6>Price</h6>
+              <div class="range-track"><div class="fill"></div><div class="knob" style="left:15%"></div><div class="knob" style="left:65%"></div></div>
+              <div class="range-labels"><span>$150</span><span>$450</span></div>
+            </div>
+            <div class="filter-group">
+              <h6>Size · EU Men</h6>
+              <div class="chip-row">
+                <span class="chip">40.5</span><span class="chip on">41</span><span class="chip">42</span><span class="chip">43</span><span class="chip">44</span><span class="chip">45</span>
+              </div>
+            </div>
+            <div class="filter-group">
+              <h6>Color</h6>
+              <div class="swatch-row">
+                <div class="swatch" style="background:#111"></div>
+                <div class="swatch" style="background:#efeadb"></div>
+                <div class="swatch" style="background:#8a6b4a"></div>
+                <div class="swatch" style="background:#9a9a94"></div>
+                <div class="swatch" style="background:#3a4a3a"></div>
+              </div>
+            </div>
+            <div class="filter-group">
+              <h6>Brand line</h6>
+              <div class="opt-row"><input type="checkbox" checked><span>Aven Original</span></div>
+              <div class="opt-row"><input type="checkbox"><span>Aven Field</span></div>
+              <div class="opt-row"><input type="checkbox"><span>Aven Limited</span></div>
+            </div>
+            <button class="btn btn-outline btn-block">Clear filters</button>
+          </aside>
+
+          <div>
+            <div class="listing-top">
+              <span class="count">Showing 1–9 of 42 results</span>
+              <div class="sort-select">Sort · Popularity <svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2"><path d="M6 9l6 6 6-6"/></svg></div>
+            </div>
+            <div class="grid-3" id="listingGrid">
+              <!-- product cards injected by JS -->
+            </div>
+            <div class="pagination">
+              <span class="page-num on">1</span><span class="page-num">2</span><span class="page-num">3</span><span class="page-num">···</span><span class="page-num">5</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ PRODUCT DETAIL ============================================================ -->
+      <section class="page" id="page-detail">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" onclick="return go('products')">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+        <div class="crumb">Clothes and shoes <b>›</b> Shoes <b>›</b> <b>Aven Original</b></div>
+
+        <div class="pd">
+          <div>
+            <div class="glyph-tile pd-gallery-main t1"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+            <div class="pd-thumbs">
+              <div class="glyph-tile t1 on"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div class="glyph-tile t2"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div class="glyph-tile t3"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div class="glyph-tile t4"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div class="glyph-tile t5" style="display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--stone)">+4 more</div>
+            </div>
+          </div>
+          <div class="pd-info">
+            <div class="brand-row"><div class="brand-dot">A</div><span style="font-size:13px;color:var(--ink-soft)">Aven Original</span><span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--stone)">AV-RR3-WHT</span></div>
+            <h2>Ridge Runner 3</h2>
+            <div class="stars">★★★★<span style="color:var(--stone-light)">★</span> <span style="color:var(--stone);font-size:12px">42 reviews</span></div>
+            <div class="pd-price">$220.00</div>
+            <div class="opt-label"><b>Color</b><span>White / Fog</span></div>
+            <div class="color-row">
+              <div class="color-swatch on" style="background:#efeadb"></div>
+              <div class="color-swatch" style="background:#c9c4b3"></div>
+              <div class="color-swatch" style="background:#111"></div>
+            </div>
+            <div class="opt-label"><b>Size · EU Men</b><span>Select a size</span></div>
+            <div class="size-grid">
+              <div class="size-btn">40.5</div><div class="size-btn on">41</div><div class="size-btn">42</div>
+              <div class="size-btn">43</div><div class="size-btn">43.5</div><div class="size-btn">44</div>
+              <div class="size-btn">44.5</div><div class="size-btn">45</div><div class="size-btn">46</div>
+            </div>
+            <a href="#" class="size-guide">Size guide →</a>
+            <div class="pd-actions">
+              <button class="btn btn-primary btn-block" onclick="return go('cart')"><svg width="15" height="15" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:1.6"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Add to cart</button>
+              <button class="btn btn-outline btn-sq"><svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:1.6;width:18px;height:18px"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></button>
+            </div>
+            <div class="pd-ship"><svg viewBox="0 0 24 24"><path d="M3 16V6h11v10"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg>Free delivery on orders over $300 · Free 30-day returns</div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <span class="tab">Details</span><span class="tab on">Reviews</span><span class="tab">Shipping &amp; returns</span>
+        </div>
+        <div class="reviews">
+          <div>
+            <div class="rscore"><b>4.8</b><div class="stars">★★★★★</div></div>
+            <div class="rbar-row"><span style="width:10px">5</span><div class="rbar-track"><div class="rbar-fill" style="width:88%"></div></div><span>28</span></div>
+            <div class="rbar-row"><span style="width:10px">4</span><div class="rbar-track"><div class="rbar-fill" style="width:30%"></div></div><span>9</span></div>
+            <div class="rbar-row"><span style="width:10px">3</span><div class="rbar-track"><div class="rbar-fill" style="width:14%"></div></div><span>4</span></div>
+            <div class="rbar-row"><span style="width:10px">2</span><div class="rbar-track"><div class="rbar-fill" style="width:4%"></div></div><span>1</span></div>
+            <div class="rbar-row"><span style="width:10px">1</span><div class="rbar-track"><div class="rbar-fill" style="width:2%"></div></div><span>0</span></div>
+          </div>
+          <div>
+            <div class="review"><div class="who"><div class="a"></div><b>Helen M.</b><span>Yesterday</span></div><div class="stars" style="font-size:11px">★★★★★</div><p>True to size and the ankle padding held up on a 10-mile day. Breaks in fast.</p></div>
+            <div class="review"><div class="who"><div class="a"></div><b>Andrew G.</b><span>2 days ago</span></div><div class="stars" style="font-size:11px">★★★★<span style="color:var(--stone-light)">★</span></div><p>Great everyday shoe. Wish the fog colorway ran a half size wider.</p></div>
+            <div class="review"><div class="who"><div class="a"></div><b>Priya D.</b><span>4 days ago</span></div><div class="stars" style="font-size:11px">★★★★★</div><p>Ordered a size up per the guide and it was spot on. Excellent build quality.</p></div>
+          </div>
+        </div>
+
+        <div class="related">
+          <div class="section-title" style="margin-bottom:20px">You may also like<div class="stitch"></div></div>
+          <div class="grid-4">
+            <div class="pcard"><div class="glyph-tile t2"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg></div><h4>Fieldworker Boot</h4><div class="meta"><span class="sub">Boot</span><span class="price">$340</span></div></div>
+            <div class="pcard"><div class="glyph-tile t3"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div><h4>Drift Knit</h4><div class="meta"><span class="sub">Sneaker</span><span class="price">$175</span></div></div>
+            <div class="pcard"><div class="glyph-tile t5"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div><h4>Summit GTX</h4><div class="meta"><span class="sub">Trainer</span><span class="price">$385</span></div></div>
+            <div class="pcard"><div class="glyph-tile t6"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg></div><h4>Monolith Chukka</h4><div class="meta"><span class="sub">Boot</span><span class="price">$310</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ CART ============================================================ -->
+      <section class="page" id="page-cart">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" onclick="return go('products')">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+        <div class="stage-head" style="max-width:none;padding:22px 40px 0;margin:0">
+          <div class="section-title">Your cart <span style="font-family:var(--font-mono);font-size:13px;color:var(--stone);font-weight:400">(3 items)</span></div>
+        </div>
+
+        <div class="cart-wrap">
+          <div>
+            <div class="cart-item">
+              <div class="glyph-tile t1"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div><h4>Ridge Runner 3</h4><div class="opt">White / Fog · EU 41</div><div class="qty-stepper"><button>–</button><span>1</span><button>+</button></div></div>
+              <div class="right"><span class="price">$220.00</span><a class="remove-link" href="#">Remove</a></div>
+            </div>
+            <div class="cart-item">
+              <div class="glyph-tile t4"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg></div>
+              <div><h4>Waxed Derby Boot</h4><div class="opt">Black · EU 42</div><div class="qty-stepper"><button>–</button><span>1</span><button>+</button></div></div>
+              <div class="right"><span class="price">$420.00</span><a class="remove-link" href="#">Remove</a></div>
+            </div>
+            <div class="cart-item">
+              <div class="glyph-tile t3"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div>
+              <div><h4>Drift Knit</h4><div class="opt">Grey · EU 41</div><div class="qty-stepper"><button>–</button><span>1</span><button>+</button></div></div>
+              <div class="right"><span class="price">$175.00</span><a class="remove-link" href="#">Remove</a></div>
+            </div>
+            <a href="#" onclick="return go('products')" style="display:inline-block;margin-top:18px;font-size:12.5px;text-decoration:underline;color:var(--ink-soft)">← Continue shopping</a>
+          </div>
+
+          <div class="summary-card">
+            <div class="section-title" style="font-size:16px;margin-bottom:18px">Order summary</div>
+            <div class="summary-row"><span>Subtotal</span><span>$815.00</span></div>
+            <div class="summary-row"><span>Shipping</span><span class="badge badge-success">Free</span></div>
+            <div class="summary-row"><span>Estimated tax</span><span>$56.60</span></div>
+            <div class="promo"><input class="input" placeholder="Promo code"><button class="btn btn-outline">Apply</button></div>
+            <div class="summary-row total"><span>Total</span><span>$871.60</span></div>
+            <button class="btn btn-primary btn-block" style="margin-top:16px" onclick="return go('checkout')">Checkout →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ CHECKOUT ============================================================ -->
+      <section class="page" id="page-checkout">
+        <div class="store-nav" style="border-bottom:1px solid var(--line)">
+          <div class="logo">AVEN<em>.</em></div>
+          <span style="font-size:12px;color:var(--stone)">Secure checkout</span>
+          <a href="#" onclick="return go('cart')" style="font-size:12.5px;text-decoration:underline;color:var(--ink-soft)">← Back to cart</a>
+        </div>
+        <div class="stepper">
+          <div class="step done" data-step="1"><div class="dot">✓</div>Shipping</div>
+          <div class="step-line"></div>
+          <div class="step on" data-step="2"><div class="dot">2</div>Payment</div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3"><div class="dot">3</div>Review</div>
+        </div>
+
+        <div class="checkout-wrap">
+          <div>
+            <!-- STEP 1 -->
+            <div class="checkout-step" id="cstep-1">
+              <div class="section-title" style="font-size:17px;margin-bottom:18px">Shipping address</div>
+              <div class="field-row"><div><label class="field">First name</label><input class="input" value="Marcus"></div><div><label class="field">Last name</label><input class="input" value="Reyes"></div></div>
+              <div class="field-block"><label class="field">Address</label><input class="input" value="482 Kestrel Lane"></div>
+              <div class="field-row"><div><label class="field">City</label><input class="input" value="Austin"></div><div><label class="field">ZIP code</label><input class="input" value="78701"></div></div>
+              <div class="field-block"><label class="field">Phone</label><input class="input" value="+1 512 555 0148"></div>
+              <div class="checkout-actions"><span></span><button class="btn btn-primary" onclick="setStep(2)">Continue to payment →</button></div>
+            </div>
+            <!-- STEP 2 -->
+            <div class="checkout-step active" id="cstep-2">
+              <div class="section-title" style="font-size:17px;margin-bottom:18px">Payment method</div>
+              <div class="pay-opts">
+                <div class="pay-opt on">Card</div><div class="pay-opt">PayPal</div><div class="pay-opt">Apple Pay</div>
+              </div>
+              <div class="field-block"><label class="field">Card number</label><input class="input" placeholder="4242 4242 4242 4242"></div>
+              <div class="field-row"><div><label class="field">Expiry</label><input class="input" placeholder="MM / YY"></div><div><label class="field">CVC</label><input class="input" placeholder="•••"></div></div>
+              <div class="field-block"><label class="field">Name on card</label><input class="input" value="Marcus Reyes"></div>
+              <div class="checkout-actions"><button class="btn btn-ghost" onclick="setStep(1)">← Back</button><button class="btn btn-primary" onclick="setStep(3)">Review order →</button></div>
+            </div>
+            <!-- STEP 3 -->
+            <div class="checkout-step" id="cstep-3">
+              <div class="section-title" style="font-size:17px;margin-bottom:18px">Review &amp; place order</div>
+              <div class="review-block"><div class="rh"><span>Shipping to</span><a href="#" onclick="setStep(1);return false">Edit</a></div>Marcus Reyes · 482 Kestrel Lane, Austin, TX 78701</div>
+              <div class="review-block"><div class="rh"><span>Payment</span><a href="#" onclick="setStep(2);return false">Edit</a></div>Visa ending in 4242</div>
+              <div class="review-block"><div class="rh"><span>Delivery</span></div>Standard · Arrives Sep 4–6</div>
+              <div class="checkout-actions"><button class="btn btn-ghost" onclick="setStep(2)">← Back</button><button class="btn btn-primary" onclick="return go('confirm')">Place order — $871.60</button></div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="section-title" style="font-size:16px;margin-bottom:14px">Order summary</div>
+            <div class="mini-order-row"><div class="glyph-tile t1"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div><div class="g">Ridge Runner 3<br><span style="color:var(--stone)">Qty 1 · EU 41</span></div><div class="p">$220.00</div></div>
+            <div class="mini-order-row"><div class="glyph-tile t4"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg></div><div class="g">Waxed Derby Boot<br><span style="color:var(--stone)">Qty 1 · EU 42</span></div><div class="p">$420.00</div></div>
+            <div class="mini-order-row"><div class="glyph-tile t3"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div><div class="g">Drift Knit<br><span style="color:var(--stone)">Qty 1 · EU 41</span></div><div class="p">$175.00</div></div>
+            <div class="summary-row" style="margin-top:14px"><span>Subtotal</span><span>$815.00</span></div>
+            <div class="summary-row"><span>Shipping</span><span class="badge badge-success">Free</span></div>
+            <div class="summary-row"><span>Tax</span><span>$56.60</span></div>
+            <div class="summary-row total"><span>Total</span><span>$871.60</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ ACCOUNT ============================================================ -->
+      <section class="page" id="page-account">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" onclick="return go('products')">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#"><div class="avatar"></div></a>
+          </div>
+        </div>
+
+        <div class="account-wrap">
+          <nav class="account-nav">
+            <a class="on" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg>Profile</a>
+            <a href="#" onclick="return go('orders')"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>Orders</a>
+            <a href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M3 16V6h11v10"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg>Addresses</a>
+            <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Payment methods</a>
+            <a href="#" onclick="return go('auth')"><svg viewBox="0 0 24 24"><path d="M15 3h4v18h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>Sign out</a>
+          </nav>
+
+          <div>
+            <div class="profile-card">
+              <div class="av"></div>
+              <div style="flex:1"><h3>Marcus Reyes</h3><span>marcus.reyes@gmail.com · Member since 2024</span></div>
+              <button class="btn btn-outline">Edit profile</button>
+            </div>
+
+            <div class="section-title" style="font-size:15px;margin-bottom:12px">Saved addresses</div>
+            <div class="addr-card"><div class="top"><b>Home</b><a href="#" style="font-size:12px;text-decoration:underline;color:var(--stone)">Edit</a></div><span style="color:var(--ink-soft)">482 Kestrel Lane, Austin, TX 78701</span></div>
+            <div class="addr-card"><div class="top"><b>Studio</b><a href="#" style="font-size:12px;text-decoration:underline;color:var(--stone)">Edit</a></div><span style="color:var(--ink-soft)">14 Founders Row, Suite 3, Austin, TX 78702</span></div>
+
+            <div class="section-title" style="font-size:15px;margin:26px 0 4px">Recent orders</div>
+            <div class="mini-order"><div class="l"><b style="font-family:var(--font-mono);font-size:12.5px">#AV-10482</b><span>Placed Aug 21, 2026 · 2 items</span></div><span class="badge badge-success">Delivered</span></div>
+            <div class="mini-order"><div class="l"><b style="font-family:var(--font-mono);font-size:12.5px">#AV-10411</b><span>Placed Jul 30, 2026 · 1 item</span></div><span class="badge badge-warn">In transit</span></div>
+            <button class="btn btn-ghost" style="margin-top:14px" onclick="return go('orders')">View all orders →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ WISHLIST ============================================================ -->
+      <section class="page" id="page-wishlist">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" onclick="return go('products')">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#"><svg viewBox="0 0 24 24" style="stroke:var(--danger);fill:var(--danger)"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+        <div class="stage-head" style="max-width:none;padding:22px 40px 0;margin:0">
+          <div class="section-title">Wishlist <span style="font-family:var(--font-mono);font-size:13px;color:var(--stone);font-weight:400">(5 saved)</span></div>
+        </div>
+        <div class="wishlist-wrap">
+          <div class="grid-4">
+            <div class="pcard"><div class="glyph-tile t1"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg><div class="wish-dot filled"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Ridge Runner 3</h4><div class="meta"><span class="sub">White / Fog</span><span class="price">$220</span></div><button class="btn btn-outline btn-block" style="margin-top:4px" onclick="return go('cart')">Move to cart</button></div>
+            <div class="pcard"><div class="glyph-tile t5"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg><div class="wish-dot filled"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Summit GTX</h4><div class="meta"><span class="sub">Storm Grey</span><span class="price">$385</span></div><button class="btn btn-outline btn-block" style="margin-top:4px">Move to cart</button></div>
+            <div class="pcard"><div class="glyph-tile t6"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg><div class="wish-dot filled"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Monolith Chukka</h4><div class="meta"><span class="sub">Tobacco</span><span class="price">$310</span></div><button class="btn btn-outline btn-block" style="margin-top:4px">Move to cart</button></div>
+            <div class="pcard"><div class="glyph-tile t2"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg><div class="wish-dot filled"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4>Fieldworker Boot</h4><div class="meta"><span class="sub">Chestnut</span><span class="price">$340</span></div><button class="btn btn-outline btn-block" style="margin-top:4px">Move to cart</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ ORDER CONFIRMATION ============================================================ -->
+      <section class="page" id="page-confirm">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <span style="font-size:12px;color:var(--stone)">Order confirmation</span>
+          <a href="#" onclick="return go('home')" style="font-size:12.5px;text-decoration:underline;color:var(--ink-soft)">Return to store</a>
+        </div>
+        <div class="confirm-wrap">
+          <div class="check-ring"><svg viewBox="0 0 24 24"><path d="M8 12l2.5 2.5L16 9"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h2>Order placed. Thanks, Marcus.</h2>
+          <p>A confirmation has been sent to marcus.reyes@gmail.com. We'll notify you the moment it ships.</p>
+          <div class="confirm-meta">
+            <div><span>Order number</span><b>#AV-10527</b></div>
+            <div><span>Total</span><b>$871.60</b></div>
+            <div><span>Arriving</span><b>Sep 4 – 6</b></div>
+          </div>
+          <div class="confirm-track">
+            <div class="section-title" style="font-size:14px">Order status</div>
+            <div class="timeline">
+              <div class="tl-step done"><div class="tl-dot"></div><span>Order<br>placed</span></div>
+              <div class="tl-step"><div class="tl-dot"></div><span>Processing</span></div>
+              <div class="tl-step"><div class="tl-dot"></div><span>Shipped</span></div>
+              <div class="tl-step"><div class="tl-dot"></div><span>Delivered</span></div>
+            </div>
+          </div>
+          <div class="confirm-actions">
+            <button class="btn btn-outline" onclick="return go('orders')">Track order</button>
+            <button class="btn btn-primary" onclick="return go('home')">Continue shopping</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ ORDER MANAGEMENT ============================================================ -->
+      <section class="page" id="page-orders">
+        <div class="store-nav">
+          <div class="logo">AVEN<em>.</em></div>
+          <div class="store-links"><a href="#" onclick="return go('home')">Home</a><a href="#" onclick="return go('products')">Sneakers</a><a href="#">Boots</a><a href="#">Trainers</a><a href="#">Sale</a></div>
+          <div class="store-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search Aven.com</div>
+          <div class="store-actions">
+            <a class="icon-btn" href="#" onclick="return go('wishlist')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg>Wishlist</a>
+            <a class="icon-btn" href="#" onclick="return go('cart')"><span class="icon-badge">3</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 12h10.2L20 7H6"/></svg>Cart</a>
+            <a href="#" onclick="return go('account')"><div class="avatar"></div></a>
+          </div>
+        </div>
+        <div class="stage-head" style="max-width:none;padding:22px 40px 0;margin:0">
+          <div class="section-title">Order history<div class="stitch" style="max-width:120px"></div></div>
+        </div>
+        <div class="orders-wrap">
+          <div class="order-row">
+            <div><b class="oid">#AV-10527</b><div class="odate">Placed Aug 29, 2026</div></div>
+            <span>3 items</span><span style="font-family:var(--font-mono)">$871.60</span><span class="badge badge-warn">Processing</span>
+            <button class="btn btn-outline" style="padding:8px 16px" onclick="return go('confirm')">View</button>
+          </div>
+          <div class="order-row">
+            <div><b class="oid">#AV-10482</b><div class="odate">Placed Aug 21, 2026</div></div>
+            <span>2 items</span><span style="font-family:var(--font-mono)">$540.00</span><span class="badge badge-success">Delivered</span>
+            <button class="btn btn-outline" style="padding:8px 16px" onclick="toggleDetail()">View</button>
+          </div>
+
+          <div class="order-detail" id="orderDetail">
+            <div>
+              <h4>Items</h4>
+              <div class="mini-order-row"><div class="glyph-tile t2"><svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg></div><div class="g">Fieldworker Boot<br><span style="color:var(--stone)">Chestnut · EU 42</span></div><div class="p">$340.00</div></div>
+              <div class="mini-order-row"><div class="glyph-tile t6"><svg viewBox="0 0 60 40"><use href="#sneaker-glyph"/></svg></div><div class="g">Drift Knit<br><span style="color:var(--stone)">Grey · EU 41</span></div><div class="p">$175.00</div></div>
+              <h4 style="margin-top:18px">Delivery timeline</h4>
+              <div class="timeline" style="margin-top:10px">
+                <div class="tl-step done"><div class="tl-dot"></div><span>Placed</span></div>
+                <div class="tl-step done"><div class="tl-dot"></div><span>Shipped</span></div>
+                <div class="tl-step done"><div class="tl-dot"></div><span>Out for<br>delivery</span></div>
+                <div class="tl-step done"><div class="tl-dot"></div><span>Delivered</span></div>
+              </div>
+            </div>
+            <div>
+              <h4>Shipping address</h4>
+              <p style="color:var(--ink-soft);margin-bottom:18px">Marcus Reyes<br>482 Kestrel Lane, Austin, TX 78701</p>
+              <h4>Summary</h4>
+              <div class="summary-row"><span>Subtotal</span><span>$515.00</span></div>
+              <div class="summary-row"><span>Shipping</span><span class="badge badge-success">Free</span></div>
+              <div class="summary-row"><span>Tax</span><span>$25.00</span></div>
+              <div class="summary-row total"><span>Total</span><span>$540.00</span></div>
+              <button class="btn btn-outline btn-block" style="margin-top:12px">Buy again</button>
+            </div>
+          </div>
+
+          <div class="order-row">
+            <div><b class="oid">#AV-10287</b><div class="odate">Placed Jun 3, 2026</div></div>
+            <span>1 item</span><span style="font-family:var(--font-mono)">$220.00</span><span class="badge badge-danger">Returned</span>
+            <button class="btn btn-outline" style="padding:8px 16px">View</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ LOGIN / SIGNUP ============================================================ -->
+      <section class="page" id="page-auth">
+        <div class="auth-wrap">
+          <div class="auth-visual">
+            <div class="logo" style="color:#efeadb">AVEN<em style="background:transparent;color:var(--accent);padding:0">.</em></div>
+            <div class="auth-quote">"The best pair in my closet is the one I forget I'm wearing."</div>
+            <svg viewBox="0 0 60 40"><use href="#boot-glyph"/></svg>
+          </div>
+          <div class="auth-form-side">
+            <div class="auth-toggle">
+              <button class="on" onclick="setAuth('login')">Log in</button>
+              <button onclick="setAuth('signup')">Sign up</button>
+            </div>
+
+            <div class="auth-panel active" id="auth-login">
+              <h2>Welcome back</h2>
+              <p>Log in to check order status and reorder favorites.</p>
+              <div class="field-block"><label class="field">Email</label><input class="input" placeholder="you@email.com"></div>
+              <div class="field-block"><label class="field">Password</label><input class="input" type="password" placeholder="••••••••"></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:20px"><span style="color:var(--stone)"><input type="checkbox" style="accent-color:var(--ink)"> Remember me</span><a href="#" style="text-decoration:underline;color:var(--ink-soft)">Forgot password?</a></div>
+              <button class="btn btn-primary btn-block" onclick="return go('account')">Log in</button>
+              <div class="divider">or continue with</div>
+              <div class="social-row"><button class="btn btn-outline btn-block">Google</button><button class="btn btn-outline btn-block">Apple</button></div>
+              <div class="auth-foot">New to Aven? <a href="#" onclick="setAuth('signup');return false">Create an account</a></div>
+            </div>
+
+            <div class="auth-panel" id="auth-signup">
+              <h2>Create your account</h2>
+              <p>Join Aven for early access to limited releases.</p>
+              <div class="field-row"><div><label class="field">First name</label><input class="input" placeholder="Marcus"></div><div><label class="field">Last name</label><input class="input" placeholder="Reyes"></div></div>
+              <div class="field-block"><label class="field">Email</label><input class="input" placeholder="you@email.com"></div>
+              <div class="field-block"><label class="field">Password</label><input class="input" type="password" placeholder="Minimum 8 characters"></div>
+              <button class="btn btn-primary btn-block" onclick="return go('account')">Create account</button>
+              <div class="divider">or continue with</div>
+              <div class="social-row"><button class="btn btn-outline btn-block">Google</button><button class="btn btn-outline btn-block">Apple</button></div>
+              <div class="auth-foot">Already have an account? <a href="#" onclick="setAuth('login');return false">Log in</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+const titles = {home:'Home',products:'Shop — Sneakers',detail:'Product detail',cart:'Cart',checkout:'Checkout',account:'Account',wishlist:'Wishlist',confirm:'Order confirmation',orders:'Order management',auth:'Log in / Sign up'};
+
+function go(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.rail-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
+  document.getElementById('stageTitle').textContent = titles[name] || name;
+  document.querySelector('.stage').scrollTo(0,0);
+  window.scrollTo(0,0);
+  return false;
+}
+document.querySelectorAll('.rail-btn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+
+function setStep(n){
+  document.querySelectorAll('.checkout-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('cstep-'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach(s=>{
+    const sn = parseInt(s.dataset.step);
+    s.classList.remove('on','done');
+    if(sn < n) s.classList.add('done');
+    if(sn === n) s.classList.add('on');
+  });
+}
+
+function setAuth(which){
+  document.querySelectorAll('.auth-toggle button').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('auth-'+which).classList.add('active');
+  event.target.classList.add('on');
+}
+
+function toggleDetail(){
+  const d = document.getElementById('orderDetail');
+  d.style.display = d.style.display === 'grid' ? 'none' : 'grid';
+}
+document.getElementById('orderDetail').style.display='none';
+
+// build listing grid
+const listItems = [
+  ['t1','sneaker-glyph','Ridge Runner 3','White / Fog','$220'],
+  ['t2','boot-glyph','Fieldworker Boot','Chestnut','$340'],
+  ['t3','sneaker-glyph','Cascade Trail','Storm Grey','$260'],
+  ['t4','boot-glyph','Waxed Derby Boot','Black','$420'],
+  ['t5','sneaker-glyph','Summit GTX','Grey / Volt','$385'],
+  ['t6','boot-glyph','Monolith Chukka','Tobacco','$310'],
+  ['t1','sneaker-glyph','Drift Knit','Fog','$175'],
+  ['t2','boot-glyph','Highline Work Boot','Oak','$360'],
+  ['t3','sneaker-glyph','Aven Original Low','Bone','$195'],
+];
+const grid = document.getElementById('listingGrid');
+listItems.forEach(([tone,glyph,name,color,price])=>{
+  const el = document.createElement('div');
+  el.className='pcard';
+  el.innerHTML = `<div class="glyph-tile ${tone}" style="cursor:pointer" onclick="go('detail')"><svg viewBox="0 0 60 40"><use href="#${glyph}"/></svg><div class="wish-dot"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z"/></svg></div></div><h4 style="cursor:pointer" onclick="go('detail')">${name}</h4><div class="meta"><span class="sub">${color}</span><span class="price">${price}</span></div>`;
+  grid.appendChild(el);
+});
+</script>
+</body>
+</html>

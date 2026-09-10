@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-inter), Arial, sans-serif;
+  --font-display: var(--font-space-grotesk), Arial, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --color-ink: #0e0e0c;
+  --color-ink-soft: #3a382f;
+  --color-paper: #f2efe6;
+  --color-panel: #ffffff;
+  --color-line: #e4e0d2;
+  --color-stone: #8f8a7a;
+  --color-stone-light: #c9c4b3;
+  --color-accent: #e7c94a;
+  --color-accent-ink: #2b2506;
+  --color-danger: #b5482f;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-space-grotesk), Arial, sans-serif;
+  --font-body: var(--font-inter), Arial, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
+  background: #ffffff;
+  color: #0e0e0c;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stitch {
+  width: 34px;
+  height: 2px;
+  background-image: linear-gradient(90deg, #5a5744 0 6px, transparent 6px 10px);
+  background-size: 10px 2px;
+  opacity: 0.7;
+}
+
+.stitch-line {
+  height: 2px;
+  background-image: linear-gradient(90deg, #5a5744 0 6px, transparent 6px 10px);
+  background-size: 10px 2px;
+  opacity: 0.7;
 }
