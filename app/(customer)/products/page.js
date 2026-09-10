@@ -41,9 +41,12 @@ const TILE_TONES = [
 ];
 
 const SORT_OPTIONS = [
-  { id: "newest", label: "Newest first" },
-  { id: "price_asc", label: "Price: low to high" },
-  { id: "price_desc", label: "Price: high to low" },
+  { id: "newest", label: "What's new" },
+  { id: "price_desc", label: "Price - high to low" },
+  { id: "popularity", label: "Popularity" },
+  { id: "discount", label: "Discount" },
+  { id: "price_asc", label: "Price - low to high" },
+  { id: "rating", label: "Customer Rating" },
 ];
 
 const SIZE_OPTIONS = [
@@ -84,6 +87,19 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlistIds, setWishlistIds] = useState(new Set());
   const sortDropdownRef = useRef(null);
+
+  // Mobile sort & filter drawer state
+  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [activeFilterTab, setActiveFilterTab] = useState("category");
+
+  // Staged filter state for mobile modal
+  const [tempCategories, setTempCategories] = useState([]);
+  const [tempMinPrice, setTempMinPrice] = useState(1000);
+  const [tempMaxPrice, setTempMaxPrice] = useState(10000);
+  const [tempSizes, setTempSizes] = useState([]);
+  const [tempColors, setTempColors] = useState([]);
+  const [tempBrands, setTempBrands] = useState(["Aven Original"]);
 
   // Fetch user's active wishlist on mount to reflect filled hearts
   useEffect(() => {
@@ -342,6 +358,15 @@ export default function ProductsPage() {
       if (sortOption === "price_desc") {
         return (Number(b.base_price) || 0) - (Number(a.base_price) || 0);
       }
+      if (sortOption === "popularity") {
+        return (Number(b.id) || 0) - (Number(a.id) || 0);
+      }
+      if (sortOption === "rating") {
+        return (Number(b.base_price) || 0) - (Number(a.base_price) || 0);
+      }
+      if (sortOption === "discount") {
+        return (Number(a.base_price) || 0) - (Number(b.base_price) || 0);
+      }
       if (sortOption === "newest") {
         const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
         const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
@@ -390,21 +415,115 @@ export default function ProductsPage() {
     setSortOption("newest");
   };
 
+  const openMobileFilters = () => {
+    setTempCategories([...selectedCategories]);
+    setTempMinPrice(minPrice);
+    setTempMaxPrice(maxPrice);
+    setTempSizes([...selectedSizes]);
+    setTempColors([...selectedColors]);
+    setTempBrands([...selectedBrands]);
+    setIsMobileFilterOpen(true);
+  };
+
+  const applyMobileFilters = () => {
+    setSelectedCategories(tempCategories);
+    setMinPrice(tempMinPrice);
+    setMaxPrice(tempMaxPrice);
+    setSelectedSizes(tempSizes);
+    setSelectedColors(tempColors);
+    setSelectedBrands(tempBrands);
+    setIsMobileFilterOpen(false);
+  };
+
+  const clearMobileFilters = () => {
+    setTempCategories([]);
+    setTempMinPrice(1000);
+    setTempMaxPrice(10000);
+    setTempSizes([]);
+    setTempColors([]);
+    setTempBrands(["Aven Original"]);
+  };
+
+  const hasActiveFilters =
+    selectedCategories.length > 0 ||
+    minPrice > 1000 ||
+    maxPrice < 10000 ||
+    selectedSizes.length > 0 ||
+    selectedColors.length > 0 ||
+    (selectedBrands.length > 0 && !selectedBrands.includes("Aven Original")) ||
+    selectedBrands.length > 1;
+
   const activeSortLabel =
-    SORT_OPTIONS.find((opt) => opt.id === sortOption)?.label || "Newest first";
+    SORT_OPTIONS.find((opt) => opt.id === sortOption)?.label || "What's new";
 
   return (
     <main className="min-h-screen w-full bg-white text-[#0e0e0c]">
       
       {/* ================= STORE TOP NAV ================= */}
-      <Navbar activePage="products" />
+      <Navbar activePage="products" showSearch={false} />
+
+      {/* ================= TOP SEARCH BAR ================= */}
+      <div className="w-full px-4 sm:px-10 lg:px-16 pt-5 pb-1">
+        <div className="relative max-w-xl mx-auto sm:mx-0">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg
+              className="w-4 h-4 text-[#8f8a7a]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchQuery(val);
+              if (typeof window !== "undefined") {
+                const url = new URL(window.location.href);
+                if (val.trim()) {
+                  url.searchParams.set("search", val);
+                } else {
+                  url.searchParams.delete("search");
+                }
+                window.history.replaceState({}, "", url.toString());
+              }
+            }}
+            placeholder="Search footwear by name, category, or style..."
+            className="w-full pl-10 pr-10 py-2.5 bg-[#f6f5f0] border border-[#e4e0d2] rounded-full text-[13px] sm:text-[13.5px] text-[#0e0e0c] placeholder-[#8f8a7a] focus:outline-none focus:border-[#0e0e0c] focus:bg-white transition-all shadow-xs"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                if (typeof window !== "undefined") {
+                  const url = new URL(window.location.href);
+                  url.searchParams.delete("search");
+                  window.history.replaceState({}, "", url.toString());
+                }
+              }}
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#8f8a7a] hover:text-[#0e0e0c] cursor-pointer"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* ================= SEARCH QUERY INDICATOR ================= */}
       {searchQuery && (
-        <div className="w-full px-6 sm:px-10 lg:px-16 pt-5 flex items-center gap-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f2efe6] border border-[#e4e0d2] text-[12.5px] text-[#0e0e0c]">
+        <div className="w-full px-4 sm:px-10 lg:px-16 pt-3 flex items-center gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f2efe6] border border-[#e4e0d2] text-[12px] text-[#0e0e0c]">
             <span>
-              Search results for &ldquo;<b>{searchQuery}</b>&rdquo;
+              Results for &ldquo;<b>{searchQuery}</b>&rdquo;
             </span>
             <button
               type="button"
@@ -424,7 +543,7 @@ export default function ProductsPage() {
       )}
 
       {/* ================= BREADCRUMB ================= */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 pt-5 text-[12px] text-[#8f8a7a]">
+      <div className="w-full px-4 sm:px-10 lg:px-16 pt-3 text-[12px] text-[#8f8a7a]">
         Clothes and shoes <span className="mx-1 text-[#0e0e0c]">›</span>{" "}
         <b className="text-[#0e0e0c] font-medium">
           {selectedCategories.length === 1
@@ -434,10 +553,10 @@ export default function ProductsPage() {
       </div>
 
       {/* ================= LISTING & FILTERS WRAPPER ================= */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 py-7 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-9 items-start">
+      <div className="w-full px-4 sm:px-10 lg:px-16 py-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8 items-start">
         
-        {/* Filter Sidebar */}
-        <aside className="md:border-r border-[#e4e0d2] md:pr-7 space-y-7">
+        {/* Filter Sidebar - Desktop only, hidden on mobile */}
+        <aside className="hidden md:block md:border-r border-[#e4e0d2] md:pr-7 space-y-7">
           
           {/* Category Filter */}
           <div className="filter-group">
@@ -769,7 +888,7 @@ export default function ProductsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
               {filteredAndSortedProducts.map((product, index) => {
                 const tileBg = TILE_TONES[index % TILE_TONES.length];
                 const categoryLabel = product.category
@@ -779,7 +898,7 @@ export default function ProductsPage() {
                 return (
                   <ScrollReveal key={product.id} delay={(index % 3) * 80} y={28}>
                     <div
-                      className={`aspect-square rounded-[14px] ${tileBg} relative overflow-hidden flex items-center justify-center`}
+                      className={`aspect-square rounded-[12px] sm:rounded-[14px] ${tileBg} relative overflow-hidden flex items-center justify-center border border-[#e4e0d2]`}
                     >
                       <Link
                         href={`/products/${product.id}`}
@@ -802,10 +921,10 @@ export default function ProductsPage() {
                         type="button"
                         aria-label={wishlistIds.has(Number(product.id)) ? "Remove from wishlist" : "Add to wishlist"}
                         onClick={(e) => handleToggleWishlist(e, product.id)}
-                        className="absolute top-3 right-3 w-[32px] h-[32px] rounded-full bg-white/85 backdrop-blur-xs flex items-center justify-center shadow-xs hover:scale-110 transition-transform cursor-pointer z-10"
+                        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs hover:scale-110 active:scale-95 transition-transform cursor-pointer z-10"
                       >
                         <svg
-                          className={`w-[15px] h-[15px] ${
+                          className={`w-[13px] h-[13px] sm:w-[15px] sm:h-[15px] ${
                             wishlistIds.has(Number(product.id))
                               ? "stroke-[#b5482f] fill-[#b5482f]"
                               : "stroke-[#0e0e0c] fill-none"
@@ -819,14 +938,14 @@ export default function ProductsPage() {
 
                     <Link
                       href={`/products/${product.id}`}
-                      className="text-[14px] font-semibold text-[#0e0e0c] hover:underline block truncate mt-0.5"
+                      className="text-[13px] sm:text-[13.5px] font-medium text-[#1c1b18] hover:underline block truncate mt-0.5"
                     >
-                      {product.name}
+                      {product.name ? product.name.split(" | ")[0].trim() : "Footwear"}
                     </Link>
 
-                    <div className="flex items-center justify-between text-[12.5px]">
-                      <span className="text-[#8f8a7a]">{categoryLabel}</span>
-                      <span className="font-mono text-[14px] font-semibold text-[#0e0e0c]">
+                    <div className="flex items-center justify-between text-[11.5px] sm:text-[12px]">
+                      <span className="text-[#8f8a7a] truncate font-normal">{categoryLabel}</span>
+                      <span className="font-medium text-[13px] sm:text-[13.5px] text-[#1c1b18] shrink-0 ml-2">
                         {formatPrice(product.base_price)}
                       </span>
                     </div>
@@ -943,6 +1062,424 @@ export default function ProductsPage() {
           </div>
         </div>
       </footer>
+
+      {/* ================= MOBILE FLOATING FILTER & SORT PILL BAR ================= */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 md:hidden flex items-center justify-center">
+        <div className="flex items-center gap-6 px-6 py-2.5 rounded-full bg-white/95 backdrop-blur-md border border-[#e4e0d2] shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          {/* Option 1: Sort */}
+          <button
+            type="button"
+            onClick={() => setIsMobileSortOpen(true)}
+            className="flex items-center gap-2 text-[12.5px] font-medium text-[#1c1b18] hover:text-black cursor-pointer active:scale-95 transition-transform"
+          >
+            <svg
+              className="w-4 h-4 text-[#1c1b18]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 3v18" />
+              <path d="M3 7l4-4 4 4" />
+              <path d="M17 21V3" />
+              <path d="M21 17l-4 4-4-4" />
+            </svg>
+            <span>Sort</span>
+          </button>
+
+          {/* Vertical Divider */}
+          <div className="h-4 w-px bg-[#e4e0d2]" />
+
+          {/* Option 2: Filter */}
+          <button
+            type="button"
+            onClick={openMobileFilters}
+            className="flex items-center gap-2 text-[12.5px] font-medium text-[#1c1b18] hover:text-black cursor-pointer active:scale-95 transition-transform relative"
+          >
+            <svg
+              className="w-4 h-4 text-[#1c1b18]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="12" x2="20" y2="3" />
+              <line x1="1" y1="14" x2="7" y2="14" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="17" y1="16" x2="23" y2="16" />
+            </svg>
+            <span>Filters</span>
+            {hasActiveFilters && (
+              <span className="w-2 h-2 rounded-full bg-[#e11d48]" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* ================= MOBILE SORT BOTTOM SHEET MODAL ================= */}
+      {isMobileSortOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsMobileSortOpen(false)}
+          />
+
+          {/* Bottom Sheet Card */}
+          <div className="relative w-full bg-white rounded-t-[24px] shadow-2xl z-10 p-5 pt-4 pb-8 animate-in slide-in-from-bottom duration-200">
+            {/* Handle bar */}
+            <div className="w-12 h-1 bg-[#e4e0d2] rounded-full mx-auto mb-4" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#f0eee6]">
+              <div className="flex items-center gap-2 font-semibold text-[15px] text-[#0e0e0c]">
+                <svg
+                  className="w-4 h-4 text-[#0e0e0c]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 3v18" />
+                  <path d="M3 7l4-4 4 4" />
+                  <path d="M17 21V3" />
+                  <path d="M21 17l-4 4-4-4" />
+                </svg>
+                <span>Sort</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobileSortOpen(false)}
+                className="w-7 h-7 flex items-center justify-center rounded-full text-[#8f8a7a] hover:text-[#0e0e0c] hover:bg-[#f6f5f0] text-[16px] cursor-pointer"
+                aria-label="Close sort"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Sort Options list */}
+            <div className="py-2 space-y-1">
+              {SORT_OPTIONS.map((opt) => {
+                const isSelected = sortOption === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => {
+                      setSortOption(opt.id);
+                      setIsMobileSortOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between py-3 px-2 text-left text-[14px] cursor-pointer transition-colors ${
+                      isSelected
+                        ? "font-semibold text-[#0e0e0c]"
+                        : "text-[#4a473d] hover:text-[#0e0e0c]"
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    {isSelected && (
+                      <span className="w-5 h-5 rounded-full bg-[#0e0e0c] text-white flex items-center justify-center text-[11px]">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MOBILE 2-COLUMN FILTER MODAL (MYNTRA-STYLE) ================= */}
+      {isMobileFilterOpen && (
+        <div className="fixed inset-0 z-50 md:hidden bg-white flex flex-col animate-in fade-in duration-150">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#e4e0d2] bg-white">
+            <h3 className="font-semibold text-[16px] text-[#0e0e0c]">Filters</h3>
+            <button
+              type="button"
+              onClick={clearMobileFilters}
+              className="text-[12.5px] font-semibold text-[#e11d48] hover:opacity-80 tracking-wide uppercase cursor-pointer"
+            >
+              Clear All
+            </button>
+          </div>
+
+          {/* 2-Column Split Body */}
+          <div className="flex-1 flex overflow-hidden">
+            {/* Left Column - Category Tabs */}
+            <div className="w-[38%] bg-[#f8f7f4] border-r border-[#e4e0d2] overflow-y-auto">
+              {[
+                { id: "category", label: "Categories", count: tempCategories.length },
+                { id: "price", label: "Price Range", active: tempMinPrice > 1000 || tempMaxPrice < 10000 },
+                { id: "size", label: "Size", count: tempSizes.length },
+                { id: "color", label: "Color", count: tempColors.length },
+                { id: "brand", label: "Brand", count: tempBrands.length > 1 || (tempBrands.length === 1 && !tempBrands.includes("Aven Original")) ? tempBrands.length : 0 },
+              ].map((tab) => {
+                const isCurrent = activeFilterTab === tab.id;
+                const hasSelection = (tab.count && tab.count > 0) || tab.active;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveFilterTab(tab.id)}
+                    className={`w-full text-left py-4 px-4 text-[13px] border-b border-[#ede9df] transition-all relative flex items-center justify-between cursor-pointer ${
+                      isCurrent
+                        ? "bg-white font-semibold text-[#0e0e0c] border-l-[3px] border-l-[#0e0e0c]"
+                        : "text-[#555246] hover:bg-[#f1eee6]"
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    {hasSelection && (
+                      <span className="w-2 h-2 rounded-full bg-[#e11d48]" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right Column - Tab Content */}
+            <div className="w-[62%] bg-white overflow-y-auto p-4">
+              {/* Category Tab */}
+              {activeFilterTab === "category" && (
+                <div className="space-y-3.5">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#8f8a7a] mb-2">
+                    Select Category
+                  </h4>
+                  {[
+                    { id: "sneaker", label: "Sneakers", count: categoryCounts.sneaker || 0 },
+                    { id: "boot", label: "Boots", count: categoryCounts.boot || 0 },
+                    { id: "trainer", label: "Trainers", count: categoryCounts.trainer || 0 },
+                    { id: "chukka", label: "Chukka", count: categoryCounts.chukka || 0 },
+                  ].map((cat) => {
+                    const isChecked = tempCategories.includes(cat.id);
+                    return (
+                      <label
+                        key={cat.id}
+                        className="flex items-center gap-3 text-[13.5px] text-[#1c1b18] cursor-pointer select-none py-1"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            setTempCategories((prev) =>
+                              prev.includes(cat.id)
+                                ? prev.filter((c) => c !== cat.id)
+                                : [...prev, cat.id]
+                            );
+                          }}
+                          className="w-4 h-4 accent-[#0e0e0c] rounded cursor-pointer"
+                        />
+                        <span>{cat.label} ({cat.count})</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Price Range Tab */}
+              {activeFilterTab === "price" && (
+                <div className="space-y-4">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#8f8a7a] mb-2">
+                    Price Range
+                  </h4>
+                  <div className="text-[13px] text-[#1c1b18] font-medium">
+                    ₹{tempMinPrice.toLocaleString("en-IN")} — ₹{tempMaxPrice.toLocaleString("en-IN")}
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <p className="text-[11.5px] text-[#8f8a7a]">Minimum Price</p>
+                    <input
+                      type="range"
+                      min="1000"
+                      max="10000"
+                      step="250"
+                      value={tempMinPrice}
+                      onChange={(e) => {
+                        const val = Math.min(Number(e.target.value), tempMaxPrice - 500);
+                        setTempMinPrice(val);
+                      }}
+                      className="w-full accent-[#0e0e0c]"
+                    />
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <p className="text-[11.5px] text-[#8f8a7a]">Maximum Price</p>
+                    <input
+                      type="range"
+                      min="1000"
+                      max="10000"
+                      step="250"
+                      value={tempMaxPrice}
+                      onChange={(e) => {
+                        const val = Math.max(Number(e.target.value), tempMinPrice + 500);
+                        setTempMaxPrice(val);
+                      }}
+                      className="w-full accent-[#0e0e0c]"
+                    />
+                  </div>
+
+                  {/* Preset quick buttons */}
+                  <div className="pt-3 border-t border-[#f0eee6] space-y-2">
+                    <p className="text-[11.5px] text-[#8f8a7a]">Popular Brackets</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { label: "Under ₹2,000", min: 1000, max: 2000 },
+                        { label: "₹2,000 - ₹5,000", min: 2000, max: 5000 },
+                        { label: "Above ₹5,000", min: 5000, max: 10000 },
+                      ].map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            setTempMinPrice(preset.min);
+                            setTempMaxPrice(preset.max);
+                          }}
+                          className="px-2.5 py-1 text-[11.5px] rounded-full border border-[#e4e0d2] text-[#3a382f] hover:border-[#0e0e0c] bg-white cursor-pointer"
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Size Tab */}
+              {activeFilterTab === "size" && (
+                <div className="space-y-3.5">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#8f8a7a] mb-2">
+                    Select Size
+                  </h4>
+                  <div className="flex flex-col gap-2.5">
+                    {SIZE_OPTIONS.map((s) => {
+                      const isSelected = tempSizes.includes(s.id);
+                      return (
+                        <label
+                          key={s.id}
+                          className="flex items-center gap-3 text-[13.5px] text-[#1c1b18] cursor-pointer select-none py-1"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {
+                              setTempSizes((prev) =>
+                                prev.includes(s.id)
+                                  ? prev.filter((id) => id !== s.id)
+                                  : [...prev, s.id]
+                              );
+                            }}
+                            className="w-4 h-4 accent-[#0e0e0c] rounded cursor-pointer"
+                          />
+                          <span>{s.label} · EU {s.eu}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Color Tab */}
+              {activeFilterTab === "color" && (
+                <div className="space-y-3.5">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#8f8a7a] mb-2">
+                    Select Color
+                  </h4>
+                  <div className="flex flex-col gap-2.5">
+                    {COLOR_OPTIONS.map((c) => {
+                      const isSelected = tempColors.includes(c.id);
+                      return (
+                        <label
+                          key={c.id}
+                          className="flex items-center gap-3 text-[13.5px] text-[#1c1b18] cursor-pointer select-none py-1"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {
+                              setTempColors((prev) =>
+                                prev.includes(c.id)
+                                  ? prev.filter((id) => id !== c.id)
+                                  : [...prev, c.id]
+                              );
+                            }}
+                            className="w-4 h-4 accent-[#0e0e0c] rounded cursor-pointer"
+                          />
+                          <span
+                            className="w-4 h-4 rounded-full border border-zinc-300 inline-block shrink-0"
+                            style={{ backgroundColor: c.hex }}
+                          />
+                          <span>{c.name}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Brand Tab */}
+              {activeFilterTab === "brand" && (
+                <div className="space-y-3.5">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#8f8a7a] mb-2">
+                    Brand Line
+                  </h4>
+                  {["Aven Original", "Aven Field", "Aven Limited"].map((b) => {
+                    const isChecked = tempBrands.includes(b);
+                    return (
+                      <label
+                        key={b}
+                        className="flex items-center gap-3 text-[13.5px] text-[#1c1b18] cursor-pointer select-none py-1"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            setTempBrands((prev) =>
+                              prev.includes(b)
+                                ? prev.filter((item) => item !== b)
+                                : [...prev, b]
+                            );
+                          }}
+                          className="w-4 h-4 accent-[#0e0e0c] rounded cursor-pointer"
+                        />
+                        <span>{b}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Fixed Bottom Bar: CLOSE | APPLY */}
+          <div className="flex border-t border-[#e4e0d2] bg-white">
+            <button
+              type="button"
+              onClick={() => setIsMobileFilterOpen(false)}
+              className="flex-1 py-3.5 text-center font-bold text-[13px] tracking-wider text-[#0e0e0c] uppercase border-r border-[#e4e0d2] hover:bg-[#f6f5f0] active:bg-[#ede9df] transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={applyMobileFilters}
+              className="flex-1 py-3.5 text-center font-bold text-[13px] tracking-wider text-[#e11d48] uppercase hover:bg-[#fff1f2] active:bg-[#ffe4e6] transition-colors cursor-pointer"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      )}
 
     </main>
   );

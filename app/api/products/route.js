@@ -4,11 +4,11 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
 
-  let sql = "SELECT id, name, description, category, base_price, image_url, created_at FROM products";
+  let sql = "SELECT id, name, description, category, base_price, image_url, created_at FROM products WHERE (is_active = 1 OR is_active IS NULL)";
   const args = [];
 
   if (category) {
-    sql += " WHERE category = ?";
+    sql += " AND category = ?";
     args.push(category);
   }
   sql += " ORDER BY created_at DESC";

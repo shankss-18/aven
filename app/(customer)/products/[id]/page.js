@@ -60,6 +60,7 @@ export default function ProductDetailPage({ params }) {
   const [activeTab, setActiveTab] = useState("reviews");
   const [activeThumbnail, setActiveThumbnail] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [relatedWishlistIds, setRelatedWishlistIds] = useState(new Set());
   const [isAdding, setIsAdding] = useState(false);
   const [addedNotice, setAddedNotice] = useState(false);
   const [cartError, setCartError] = useState(null);
@@ -69,14 +70,15 @@ export default function ProductDetailPage({ params }) {
   useEffect(() => {
     async function checkWishlist() {
       const token = getToken();
-      if (!token || !id) return;
+      if (!token) return;
       try {
         const res = await apiFetch("/api/wishlist");
         if (res.ok) {
           const data = await res.json();
           if (data && Array.isArray(data.items)) {
-            const exists = data.items.some((item) => Number(item.product_id) === Number(id));
-            setIsWishlisted(exists);
+            const ids = new Set(data.items.map((item) => Number(item.product_id)));
+            setIsWishlisted(ids.has(Number(id)));
+            setRelatedWishlistIds(ids);
           }
         }
       } catch (err) {
@@ -117,6 +119,46 @@ export default function ProductDetailPage({ params }) {
     } catch (err) {
       console.error("Wishlist toggle error:", err);
       setIsWishlisted(!nextState); // Revert on failure
+    }
+  };
+
+  const handleToggleRelatedWishlist = async (e, relId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const token = getToken();
+    if (!token) {
+      window.location.href = "/auth";
+      return;
+    }
+    const pid = Number(relId);
+    const isCurrentlyWishlisted = relatedWishlistIds.has(pid);
+    setRelatedWishlistIds((prev) => {
+      const next = new Set(prev);
+      if (isCurrentlyWishlisted) next.delete(pid);
+      else next.add(pid);
+      return next;
+    });
+
+    try {
+      if (isCurrentlyWishlisted) {
+        const res = await apiFetch(`/api/wishlist/${pid}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to remove from wishlist");
+      } else {
+        const res = await apiFetch("/api/wishlist", {
+          method: "POST",
+          body: JSON.stringify({ productId: pid }),
+        });
+        if (!res.ok) throw new Error("Failed to add to wishlist");
+      }
+      notifyWishlistUpdated();
+    } catch (err) {
+      console.error("Related wishlist toggle error:", err);
+      setRelatedWishlistIds((prev) => {
+        const next = new Set(prev);
+        if (isCurrentlyWishlisted) next.add(pid);
+        else next.delete(pid);
+        return next;
+      });
     }
   };
 
@@ -771,47 +813,79 @@ export default function ProductDetailPage({ params }) {
 
       {/* ================= RELATED PRODUCTS ("YOU MAY ALSO LIKE") ================= */}
       {relatedProducts.length > 0 && (
-        <section className="max-w-[1200px] mx-auto w-full px-6 sm:px-8 py-8 lg:py-10 border-t border-[#e4e0d2] mt-8">
-          <div className="flex items-center gap-3.5 mb-6">
-            <h2 className="font-['Space_Grotesk'] text-[18px] sm:text-[20px] font-semibold text-[#0e0e0c]">
+        <section className="max-w-[1200px] mx-auto w-full px-6 sm:px-8 py-10 lg:py-14 border-t border-[#e4e0d2] mt-8">
+          <div className="flex items-center gap-4 mb-7">
+            <h2 className="font-['Space_Grotesk'] text-[20px] sm:text-[22px] font-medium text-[#1c1b18]">
               You may also like
             </h2>
             <div className="stitch" />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
             {relatedProducts.map((rel, idx) => {
-              const bgColors = ["bg-[#eae5d5]", "bg-[#e5e7eb]", "bg-[#f5ebd7]", "bg-[#ede8dc]"];
+              const bgColors = ["bg-[#eae5d5]", "bg-[#e3dfd0]", "bg-[#dfe2dc]", "bg-[#ece3d8]"];
               const bg = bgColors[idx % bgColors.length];
+              const cleanName = rel.name ? rel.name.split(" | ")[0].trim() : "Footwear";
+              const rawPrice = Number(rel.base_price) || 0;
+              const formattedPrice = rawPrice > 1000 ? Math.round(rawPrice / 100) : rawPrice;
+              const isItemWishlisted = relatedWishlistIds.has(Number(rel.id));
+
               return (
-                <div key={rel.id} className="flex flex-col gap-2 group">
-                  <Link
-                    href={`/products/${rel.id}`}
-                    className={`aspect-square rounded-[14px] ${bg} overflow-hidden flex items-center justify-center relative border border-[#e4e0d2]`}>
-                    {rel.image_url ? (
-                      <img
-                        src={rel.image_url}
-                        alt={rel.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : rel.category === "boot" ? (
-                      <BootGlyph className="w-[55%] stroke-[#0e0e0c] fill-none stroke-[1.2]" />
-                    ) : (
-                      <SneakerGlyph className="w-[55%] stroke-[#0e0e0c] fill-none stroke-[1.2]" />
-                    )}
-                  </Link>
-                  <Link
-                    href={`/products/${rel.id}`}
-                    className="text-[13px] font-semibold text-[#0e0e0c] hover:underline block truncate mt-0.5"
+                <div key={rel.id} className="flex flex-col gap-2.5 group h-full">
+                  <div
+                    className={`aspect-square rounded-[14px] ${bg} overflow-hidden flex items-center justify-center relative border border-[#e4e0d2]`}
                   >
-                    {rel.name}
+                    <Link
+                      href={`/products/${rel.id}`}
+                      className="w-full h-full flex items-center justify-center"
+                    >
+                      {rel.image_url ? (
+                        <img
+                          src={rel.image_url}
+                          alt={cleanName}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : rel.category === "boot" ? (
+                        <BootGlyph className="w-[55%] stroke-[#0e0e0c] fill-none stroke-[1.2]" />
+                      ) : (
+                        <SneakerGlyph className="w-[55%] stroke-[#0e0e0c] fill-none stroke-[1.2]" />
+                      )}
+                    </Link>
+
+                    {/* Interactive Heart Button */}
+                    <button
+                      type="button"
+                      aria-label={isItemWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                      onClick={(e) => handleToggleRelatedWishlist(e, rel.id)}
+                      className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs hover:scale-110 active:scale-95 transition-all cursor-pointer z-10"
+                    >
+                      <svg
+                        className={`w-[13px] h-[13px] sm:w-[15px] sm:h-[15px] ${
+                          isItemWishlisted
+                            ? "stroke-[#b5482f] fill-[#b5482f]"
+                            : "stroke-[#0e0e0c] fill-none"
+                        } stroke-[1.6] transition-colors`}
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <Link
+                    href={`/products/${rel.id}`}
+                    className="text-[13px] sm:text-[13.5px] font-medium text-[#1c1b18] hover:underline block truncate mt-0.5"
+                    title={rel.name}
+                  >
+                    {cleanName}
                   </Link>
-                  <div className="flex items-center justify-between text-[11.5px]">
-                    <span className="text-[#8f8a7a]">
+
+                  <div className="flex items-center justify-between text-[11.5px] sm:text-[12px]">
+                    <span className="text-[#8f8a7a] font-normal truncate">
                       {rel.category ? rel.category.charAt(0).toUpperCase() + rel.category.slice(1) : "Footwear"}
                     </span>
-                    <span className="font-mono text-[12.5px] font-semibold text-[#0e0e0c]">
-                      ₹{(Math.round(Number(rel.base_price) || 0) / 100).toLocaleString("en-IN")}
+                    <span className="font-medium text-[13px] sm:text-[13.5px] text-[#1c1b18] shrink-0 ml-2">
+                      ₹{formattedPrice.toLocaleString("en-IN")}
                     </span>
                   </div>
                 </div>

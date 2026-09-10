@@ -84,12 +84,14 @@ export const POST = withAdminAuth(async (request, { params }) => {
       return Response.json({ error: "No valid image files were provided" }, { status: 400 });
     }
 
-    // Set the primary thumbnail if the product doesn't already have one
+    const isCover = formData.get("isCover") === "true";
+
+    // Set the primary thumbnail if explicitly requested or if product doesn't have one
     const productResult = await db.execute({
       sql: "SELECT image_url FROM products WHERE id = ?",
       args: [id],
     });
-    if (productResult.rows[0] && !productResult.rows[0].image_url) {
+    if (isCover || (productResult.rows[0] && !productResult.rows[0].image_url)) {
       await db.execute({
         sql: "UPDATE products SET image_url = ? WHERE id = ?",
         args: [uploadedUrls[0], id],

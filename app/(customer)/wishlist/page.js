@@ -169,7 +169,7 @@ export default function WishlistPage() {
             </div>
           ) : (
             /* ================= WISHLIST GRID ================= */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
               {items.map((item, index) => {
                 const tileBg = TILE_TONES[index % TILE_TONES.length];
                 const categoryLabel = item.category
@@ -178,10 +178,10 @@ export default function WishlistPage() {
                 const isRemoving = removingId === item.product_id;
 
                 return (
-                  <div key={item.id || item.product_id} className="flex flex-col gap-3 group">
+                  <div key={item.id || item.product_id} className="flex flex-col gap-2 sm:gap-3 group">
                     {/* Visual Card */}
                     <div
-                      className={`aspect-square rounded-[14px] ${tileBg} relative overflow-hidden flex items-center justify-center border border-[#e4e0d2]`}
+                      className={`aspect-square rounded-[12px] sm:rounded-[14px] ${tileBg} relative overflow-hidden flex items-center justify-center border border-[#e4e0d2]`}
                     >
                       <Link
                         href={`/products/${item.product_id}`}
@@ -207,13 +207,13 @@ export default function WishlistPage() {
                         aria-label="Remove from wishlist"
                         disabled={isRemoving}
                         onClick={() => handleRemove(item.product_id)}
-                        className="absolute top-3 right-3 w-[32px] h-[32px] rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs hover:scale-110 transition-transform cursor-pointer z-10"
+                        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs hover:scale-110 active:scale-95 transition-all cursor-pointer z-10"
                       >
                         {isRemoving ? (
                           <div className="w-3.5 h-3.5 border-2 border-[#b5482f] border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <svg
-                            className="w-[15px] h-[15px] stroke-[#b5482f] fill-[#b5482f] stroke-[1.6]"
+                            className="w-[13px] h-[13px] sm:w-[15px] sm:h-[15px] stroke-[#b5482f] fill-[#b5482f] stroke-[1.6]"
                             viewBox="0 0 24 24"
                           >
                             <path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z" />
@@ -225,14 +225,14 @@ export default function WishlistPage() {
                     {/* Info */}
                     <Link
                       href={`/products/${item.product_id}`}
-                      className="text-[14px] font-semibold text-[#0e0e0c] hover:underline block truncate mt-0.5"
+                      className="text-[13px] sm:text-[14px] font-semibold text-[#0e0e0c] hover:underline block truncate mt-0.5"
                     >
                       {item.name}
                     </Link>
 
-                    <div className="flex items-center justify-between text-[12.5px]">
-                      <span className="text-[#8f8a7a]">{categoryLabel}</span>
-                      <span className="font-mono text-[14px] font-semibold text-[#0e0e0c]">
+                    <div className="flex items-center justify-between text-[11px] sm:text-[12.5px]">
+                      <span className="text-[#8f8a7a] truncate">{categoryLabel}</span>
+                      <span className="font-mono text-[13px] sm:text-[14px] font-semibold text-[#0e0e0c]">
                         {formatPrice(item.base_price)}
                       </span>
                     </div>

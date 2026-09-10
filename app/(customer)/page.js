@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import HomeBestSellers from "@/components/HomeBestSellers";
+import HomeProductSections from "@/components/HomeProductSections";
 import db from "@/lib/db";
 
 export const metadata = {
@@ -11,123 +11,133 @@ export const metadata = {
   alternates: { canonical: "/" },
 };
 
-
-// Shared SVG glyph for sneaker
-function SneakerGlyph({ className = "w-[62%] stroke-[#0e0e0c] fill-none stroke-[1.3]" }) {
-  return (
-    <svg viewBox="0 0 60 40" className={className} aria-hidden="true">
-      <path d="M3 34c0-4 3-6 7-8 6-3 10-8 14-13 3-3 6-4 9-3 1 3 0 6-2 8 6 1 11 4 14 9 2 3 3 6 1 9-2 2-6 3-11 3H10c-4 0-7-1-7-5z" />
-      <path d="M14 20c3 1 6 1 9 0" />
-      <path d="M20 15c2 2 5 3 8 3" />
-      <path d="M8 30h30" />
-    </svg>
-  );
-}
-
-// Shared SVG glyph for boot
-function BootGlyph({ className = "w-[62%] stroke-[#0e0e0c] fill-none stroke-[1.3]" }) {
-  return (
-    <svg viewBox="0 0 60 40" className={className} aria-hidden="true">
-      <path d="M12 6v16l-6 6c-2 2-3 4-3 7 0 3 2 4 5 4h26c3 0 5-1 5-4 0-3-2-5-5-6l-10-4V6z" />
-      <path d="M12 12h14" />
-      <path d="M9 33h30" />
-      <path d="M20 22l7 6" />
-    </svg>
-  );
-}
-
 const FALLBACK_PRODUCTS = [
   {
     id: 1,
-    name: "Ridge Runner",
+    name: "Ridge Runner Sneaker",
     category: "sneaker",
     sub: "Sneaker · White",
-    price: 220,
+    price: 650,
     image_url: "/products/ridge-runner.jpg",
-    glyph: "sneaker",
     tileBg: "bg-[#eae5d5]",
-    isWishlisted: false,
   },
   {
     id: 2,
-    name: "Fieldworker Boot",
-    category: "boot",
+    name: "Stealth Court Sneaker",
+    category: "sneaker",
     sub: "Boot · Chestnut",
-    price: 340,
-    image_url: "/products/highland-chelsea.jpg",
-    glyph: "boot",
+    price: 600,
+    image_url: "/products/stealth-court.jpg",
     tileBg: "bg-[#e3dfd0]",
-    isWishlisted: false,
   },
   {
     id: 3,
-    name: "Cascade Trail",
-    category: "trainer",
+    name: "Urban Trail Sneaker",
+    category: "sneaker",
     sub: "Trainer · Grey",
-    price: 260,
+    price: 720,
     image_url: "/products/urban-trail.jpg",
-    glyph: "sneaker",
     tileBg: "bg-[#dfe2dc]",
-    isWishlisted: true,
   },
   {
     id: 4,
-    name: "Waxed Derby Boot",
+    name: "Highland Chelsea Boot",
     category: "boot",
     sub: "Boot · Black",
-    price: 420,
-    image_url: "/products/stealth-court.jpg",
-    glyph: "boot",
+    price: 900,
+    image_url: "/products/highland-chelsea.jpg",
     tileBg: "bg-[#ece3d8]",
-    isWishlisted: false,
   },
 ];
 
-async function getProducts() {
+async function getRecentProducts() {
   try {
     const result = await db.execute({
-      sql: "SELECT id, name, description, category, base_price, image_url FROM products ORDER BY id ASC LIMIT 4",
+      sql: "SELECT id, name, description, category, base_price, image_url, created_at FROM products WHERE (is_active = 1 OR is_active IS NULL) ORDER BY created_at DESC, id DESC LIMIT 4",
       args: [],
     });
 
     if (result && result.rows && result.rows.length > 0) {
       return result.rows.map((row, index) => {
-        const fallback = FALLBACK_PRODUCTS[index] || FALLBACK_PRODUCTS[0];
+        const fallback = FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length];
         const categoryLabel = row.category
           ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
           : "Footwear";
         const rawPrice = Number(row.base_price) || 0;
         const formattedPrice =
           rawPrice >= 10000 ? Math.round(rawPrice / 1000) : rawPrice || fallback.price;
+        const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
 
         return {
           id: row.id,
-          name: row.name || fallback.name,
+          name: cleanName,
           category: row.category || fallback.category,
           sub: fallback.sub || `${categoryLabel} · Premium`,
           price: formattedPrice,
           image_url: row.image_url || fallback.image_url,
-          glyph: row.category === "boot" ? "boot" : "sneaker",
           tileBg: fallback.tileBg || "bg-[#eae5d5]",
-          isWishlisted: fallback.isWishlisted || false,
         };
       });
     }
   } catch (error) {
-    console.warn("Could not query database products, falling back to static reference:", error);
+    console.warn("Could not query recent products:", error);
+  }
+
+  return FALLBACK_PRODUCTS;
+}
+
+async function getOfferProducts() {
+  try {
+    // Select products for Special Offers section (ordered by base_price or offset)
+    const result = await db.execute({
+      sql: `SELECT id, name, description, category, base_price, image_url, created_at 
+            FROM products 
+            WHERE (is_active = 1 OR is_active IS NULL) 
+            ORDER BY base_price ASC, id ASC 
+            LIMIT 4`,
+      args: [],
+    });
+
+    if (result && result.rows && result.rows.length > 0) {
+      return result.rows.map((row, index) => {
+        const fallback = FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length];
+        const categoryLabel = row.category
+          ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
+          : "Footwear";
+        const rawPrice = Number(row.base_price) || 0;
+        const formattedPrice =
+          rawPrice >= 10000 ? Math.round(rawPrice / 1000) : rawPrice || fallback.price;
+        const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
+
+        return {
+          id: row.id,
+          name: cleanName,
+          category: row.category || fallback.category,
+          sub: fallback.sub || `${categoryLabel} · Special`,
+          price: formattedPrice,
+          image_url: row.image_url || fallback.image_url,
+          tileBg: fallback.tileBg || "bg-[#eae5d5]",
+        };
+      });
+    }
+  } catch (error) {
+    console.warn("Could not query offer products:", error);
   }
 
   return FALLBACK_PRODUCTS;
 }
 
 export default async function CustomerHomePage() {
-  const products = await getProducts();
+  const [recentProducts, offerProducts] = await Promise.all([
+    getRecentProducts(),
+    getOfferProducts(),
+  ]);
 
   return (
     <main className="min-h-screen w-full bg-white text-[#0e0e0c]">
       
-      {/* ================= STORE TOP NAV ================= */}
-      <Navbar activePage="home" />
+      {/* ================= STORE TOP NAV (Search bar hidden on homepage) ================= */}
+      <Navbar activePage="home" showSearch={false} />
 
       {/* ================= HERO SECTION ================= */}
       <HeroSection />
@@ -168,8 +178,11 @@ export default async function CustomerHomePage() {
         </div>
       </section>
 
-      {/* ================= BEST SELLERS ================= */}
-      <HomeBestSellers initialProducts={products} />
+      {/* ================= 2 PRODUCT SECTIONS: RECENT & OFFERS ================= */}
+      <HomeProductSections
+        recentProducts={recentProducts}
+        offerProducts={offerProducts}
+      />
 
       {/* ================= STORY / CRAFT SECTION ================= */}
       <section className="w-full bg-[#0e0e0c] text-[#efeadb] px-6 sm:px-10 lg:px-16 py-18 lg:py-24">

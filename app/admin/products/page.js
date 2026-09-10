@@ -7,7 +7,36 @@ import Image from "next/image";
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
   const router = useRouter();
+
+  async function handleDelete(e, product) {
+    e.stopPropagation();
+    const confirmed = window.confirm(`Are you sure you want to delete "${product.name}"?`);
+    if (!confirmed) return;
+
+    const token = localStorage.getItem("adminAuthToken");
+    if (!token) return;
+
+    setDeletingId(product.id);
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p.id !== product.id));
+      } else {
+        const err = await res.json();
+        alert(err.error || "Failed to delete product");
+      }
+    } catch (err) {
+      alert("Network error deleting product");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -147,15 +176,34 @@ export default function AdminProductsPage() {
                         : "—"}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
-                        <span>Edit</span>
-                        <svg
-                          className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] transform group-hover:translate-x-0.5 transition-transform"
-                          viewBox="0 0 24 24"
+                      <div className="inline-flex items-center gap-3">
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
+                          <span>Edit</span>
+                          <svg
+                            className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] transform group-hover:translate-x-0.5 transition-transform"
+                            viewBox="0 0 24 24"
+                          >
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleDelete(e, p)}
+                          disabled={deletingId === p.id}
+                          className="p-1.5 rounded-lg text-[#8f8a7a] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50"
+                          title={`Delete ${p.name}`}
                         >
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </span>
+                          {deletingId === p.id ? (
+                            <span className="text-[10px] font-mono animate-pulse">...</span>
+                          ) : (
+                            <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

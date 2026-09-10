@@ -26,6 +26,7 @@ export default function EditProductPage() {
   const [notFound, setNotFound] = useState(false);
   const [savingProduct, setSavingProduct] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [deletingImageId, setDeletingImageId] = useState(null);
   const [deletingProduct, setDeletingProduct] = useState(false);
 
@@ -269,6 +270,62 @@ export default function EditProductPage() {
     }
   };
 
+  const handleUploadCoverPhoto = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingCover(true);
+    const token = localStorage.getItem("adminAuthToken");
+    const formData = new FormData();
+    formData.append("images", file);
+    formData.append("isCover", "true");
+
+    try {
+      const res = await fetch(`/api/admin/products/${params.id}/images`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (res.ok) {
+        await load();
+        await loadImages();
+      } else {
+        alert("Failed to upload cover photo");
+      }
+    } catch (err) {
+      alert("Network error uploading cover photo");
+    } finally {
+      setUploadingCover(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleSetCoverImage = async (imageUrl) => {
+    const token = localStorage.getItem("adminAuthToken");
+    try {
+      const res = await fetch(`/api/admin/products/${params.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          name: product.name,
+          description: product.description,
+          category: product.category,
+          basePrice: product.base_price,
+          imageUrl: imageUrl,
+        }),
+      });
+
+      if (res.ok) {
+        setProduct((prev) => ({ ...prev, image_url: imageUrl }));
+      } else {
+        alert("Failed to update cover photo");
+      }
+    } catch (err) {
+      alert("Network error setting cover photo");
+    }
+  };
+
 
   const handleAddColor = (e) => {
     e.preventDefault();
@@ -507,28 +564,73 @@ export default function EditProductPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[#5a5744] mb-1.5">
-              Primary Image URL (Cover Thumbnail)
-            </label>
-            <input
-              type="url"
-              value={product.image_url || ""}
-              onChange={(e) => setProduct({ ...product, image_url: e.target.value })}
-              className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-sm font-mono bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all"
-            />
-            {product.image_url && (
-              <div className="mt-3 p-3 bg-[#fcfbf9] border border-[#e4e0d2] rounded-xl flex items-center gap-3">
-                <div className="w-14 h-14 rounded-lg bg-white border border-[#e4e0d2] overflow-hidden shrink-0 flex items-center justify-center">
+          {/* Primary Cover Photo (Direct Upload - No Links) */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#5a5744]">
+                  Primary Cover Photo
+                </label>
+                <p className="text-[11px] text-[#8f8a7a] mt-0.5">
+                  Direct photo upload. Displayed on storefront cards and catalog listings.
+                </p>
+              </div>
+
+              <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f2efe6] hover:bg-[#e4e0d2] text-[#0e0e0c] text-xs font-mono uppercase tracking-wider font-semibold cursor-pointer transition-colors border border-[#e4e0d2] shrink-0 self-start sm:self-auto">
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploadingCover}
+                  onChange={handleUploadCoverPhoto}
+                  className="hidden"
+                />
+                {uploadingCover ? (
+                  <>
+                    <svg className="animate-spin h-3.5 w-3.5 text-[#0e0e0c]" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>Uploading...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span>+ Upload Cover Photo</span>
+                  </>
+                )}
+              </label>
+            </div>
+
+            {product.image_url ? (
+              <div className="p-3 bg-[#fcfbf9] border border-[#e4e0d2] rounded-xl flex items-center gap-4">
+                <div className="w-16 h-16 rounded-lg bg-white border border-[#e4e0d2] overflow-hidden shrink-0 flex items-center justify-center">
                   <img
                     src={product.image_url}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="text-xs font-mono text-[#8f8a7a] truncate">
-                  {product.image_url}
-                </span>
+                <div className="text-xs space-y-0.5 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-[#0e0e0c]">Active Cover Photo</span>
+                    <span className="bg-[#0e0e0c] text-white text-[9px] font-mono px-1.5 py-0.5 rounded">
+                      Primary
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#8f8a7a]">
+                    To change, upload a new photo above or click &quot;Set as Cover&quot; on any gallery photo below.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-[#fcfbf9] border border-dashed border-[#e4e0d2] rounded-xl text-center">
+                <p className="text-xs text-[#8f8a7a]">
+                  No cover photo set yet. Click &quot;+ Upload Cover Photo&quot; or select one from the gallery below.
+                </p>
               </div>
             )}
           </div>
@@ -621,13 +723,32 @@ export default function EditProductPage() {
             {images.map((img) => (
               <div
                 key={img.id}
-                className="group relative aspect-square rounded-xl border border-[#e4e0d2] bg-[#f2efe6] overflow-hidden shadow-xs hover:border-[#0e0e0c] transition-all"
+                className={`group relative aspect-square rounded-xl border bg-[#f2efe6] overflow-hidden shadow-xs transition-all ${
+                  img.image_url === product.image_url
+                    ? "border-[#0e0e0c] ring-2 ring-[#0e0e0c]/20"
+                    : "border-[#e4e0d2] hover:border-[#0e0e0c]"
+                }`}
               >
                 <img
                   src={img.image_url}
                   alt={`Gallery image ${img.id}`}
                   className="w-full h-full object-cover"
                 />
+
+                {/* Cover status or Set as Cover button */}
+                {img.image_url === product.image_url ? (
+                  <span className="absolute bottom-2 left-2 bg-[#0e0e0c] text-white text-[9.5px] font-mono uppercase px-2 py-0.5 rounded shadow-xs">
+                    ★ Cover
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleSetCoverImage(img.image_url)}
+                    className="absolute bottom-2 left-2 bg-white/90 hover:bg-[#0e0e0c] hover:text-white text-[#0e0e0c] text-[9.5px] font-mono uppercase px-2 py-0.5 rounded border border-[#e4e0d2] opacity-0 group-hover:opacity-100 transition-all shadow-xs cursor-pointer"
+                  >
+                    Set as Cover
+                  </button>
+                )}
 
                 {/* Delete overlay button */}
                 <button

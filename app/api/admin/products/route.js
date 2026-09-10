@@ -5,6 +5,7 @@ export const GET = withAdminAuth(async () => {
   const result = await db.execute(`
     SELECT id, name, description, category, base_price, image_url, created_at
     FROM products
+    WHERE is_active = 1 OR is_active IS NULL
     ORDER BY created_at DESC
   `);
 

@@ -3,7 +3,7 @@ import db from "@/lib/db";
 export async function GET(req, { params }) {
     const { id } = await params
     const productResult = await db.execute({
-        sql: "select id, name , description, category, image_url, base_price from products where id = ?",
+        sql: "select id, name , description, category, image_url, base_price from products where id = ? and (is_active = 1 or is_active is null)",
         args: [id]
     })
     const product = productResult.rows[0]

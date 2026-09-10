@@ -10,7 +10,9 @@ export default function Navbar({
   activePage = "",
   countOverride,
   wishlistCountOverride,
+  showSearch = true,
 }) {
+  const shouldShowSearch = showSearch && activePage !== "home";
   const router = useRouter();
   const dynamicCartCount = useCartCount();
   const cartCount = countOverride !== undefined ? countOverride : dynamicCartCount;
@@ -22,8 +24,26 @@ export default function Navbar({
   const [searchQuery, setSearchQuery] = useState("");
   const [catalogProducts, setCatalogProducts] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchContainerRef = useRef(null);
   const mobileSearchContainerRef = useRef(null);
+
+  // Lock body scroll and listen for Escape key when mobile drawer is open
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
 
   // Sync search query from URL on load and on popstate
   useEffect(() => {
@@ -139,8 +159,9 @@ export default function Navbar({
 
   return (
     <header className="w-full border-b border-[#e4e0d2] bg-white sticky top-0 z-40">
-      <div className="w-full flex items-center justify-between px-6 sm:px-10 lg:px-16 py-5">
-        {/* Logo */}
+      {/* ================= DESKTOP HEADER (md and up) ================= */}
+      <div className="hidden md:flex w-full items-center justify-between px-6 sm:px-10 lg:px-16 py-4 lg:py-5">
+        {/* Left: Logo */}
         <Link
           href="/"
           className="font-['Space_Grotesk'] font-bold text-[22px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
@@ -151,8 +172,8 @@ export default function Navbar({
           </span>
         </Link>
 
-        {/* Central Nav Links */}
-        <nav className="hidden md:flex items-center gap-9 text-[13.5px] text-[#3a382f] font-medium">
+        {/* Middle: Central Navigation Links */}
+        <nav className="flex items-center gap-9 text-[13.5px] text-[#3a382f] font-medium">
           <Link
             href="/"
             className={`hover:text-[#0e0e0c] transition-colors ${
@@ -179,8 +200,9 @@ export default function Navbar({
           </Link>
         </nav>
 
-        {/* Desktop Search Bar with Live Suggestions Dropdown */}
-        <div ref={searchContainerRef} className="relative hidden sm:block">
+        {/* Search Bar with Live Suggestions Dropdown (Hidden on Homepage) */}
+        {shouldShowSearch && (
+        <div ref={searchContainerRef} className="relative">
           <form
             onSubmit={handleSearchSubmit}
             className="flex items-center gap-2.5 w-[200px] md:w-[250px] lg:w-[320px] bg-[#f2efe6] rounded-full px-4 py-2 text-[13px] text-[#0e0e0c] focus-within:ring-1 focus-within:ring-[#0e0e0c] transition-all"
@@ -289,10 +311,10 @@ export default function Navbar({
             </div>
           )}
         </div>
+        )}
 
-        {/* Right Action Icons (Wishlist, Cart, Profile) */}
+        {/* Right: Action Icons (Wishlist, Cart, Profile, Admin) */}
         <div className="flex items-center gap-5 sm:gap-6">
-          {/* Wishlist Link with Live Number Badge */}
           <Link
             href="/wishlist"
             id="nav-wishlist-link"
@@ -318,7 +340,6 @@ export default function Navbar({
             <span>Wishlist</span>
           </Link>
 
-          {/* Cart Link with Live Number Badge */}
           <Link
             href="/cart"
             id="nav-cart-link"
@@ -346,7 +367,6 @@ export default function Navbar({
             <span>Cart</span>
           </Link>
 
-          {/* Profile */}
           <Link
             href="/account"
             aria-label="Profile"
@@ -363,7 +383,6 @@ export default function Navbar({
             <span>Profile</span>
           </Link>
 
-          {/* Admin Link */}
           <Link
             href="/admin/login"
             aria-label="Admin dashboard"
@@ -378,8 +397,85 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile Search Bar for small screens */}
-      <div ref={mobileSearchContainerRef} className="sm:hidden px-4 pb-3 pt-0 relative">
+      {/* ================= MOBILE HEADER (md:hidden) ================= */}
+      {/* Layout: Hamburger on Left | Logo in Middle | Cart & Wishlist on Right */}
+      <div className={`flex md:hidden w-full items-center justify-between px-4 py-3 bg-white ${!shouldShowSearch ? "border-b border-[#e4e0d2]" : ""}`}>
+        {/* Left: Hamburger Button */}
+        <div className="flex items-center w-1/4 justify-start">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
+            className="p-1.5 -ml-1 text-[#0e0e0c] hover:bg-[#f2efe6] rounded-lg transition-colors cursor-pointer"
+          >
+            <svg className="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Middle: Brand Logo */}
+        <div className="flex items-center justify-center w-2/4">
+          <Link
+            href="/"
+            className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
+          >
+            AVEN
+            <span className="not-italic text-[#2b2506] bg-[#e7c94a] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
+              .
+            </span>
+          </Link>
+        </div>
+
+        {/* Right: Cart & Wishlist */}
+        <div className="flex items-center justify-end gap-3 w-1/4">
+          {/* Wishlist */}
+          <Link
+            href="/wishlist"
+            className="relative p-1 text-[#0e0e0c] hover:bg-[#f2efe6] rounded-lg transition-colors"
+            aria-label="Wishlist"
+          >
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#0e0e0c] text-white font-mono text-[9px] font-semibold w-4 h-4 rounded-full flex items-center justify-center shadow-xs border border-white">
+                {wishlistCount}
+              </span>
+            )}
+            <svg
+              className="w-[21px] h-[21px] stroke-[#0e0e0c] fill-none stroke-[1.8]"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z" />
+            </svg>
+          </Link>
+
+          {/* Cart */}
+          <Link
+            href="/cart"
+            className="relative p-1 text-[#0e0e0c] hover:bg-[#f2efe6] rounded-lg transition-colors"
+            aria-label="Cart"
+          >
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#e7c94a] text-[#2b2506] font-mono text-[9px] font-semibold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                {cartCount}
+              </span>
+            )}
+            <svg
+              className="w-[21px] h-[21px] stroke-[#0e0e0c] fill-none stroke-[1.8]"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="9" cy="20" r="1.4" />
+              <circle cx="17" cy="20" r="1.4" />
+              <path d="M3 4h2l2.4 12h10.2L20 7H6" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+
+      {/* Mobile Search Bar (Hidden on Homepage) */}
+      {shouldShowSearch && (
+      <div ref={mobileSearchContainerRef} className="md:hidden px-4 pb-3 pt-0 relative bg-white border-b border-[#e4e0d2]">
         <form
           onSubmit={handleSearchSubmit}
           className="flex items-center gap-2 w-full bg-[#f2efe6] rounded-full px-3.5 py-1.5 text-[12.5px] text-[#0e0e0c] border border-[#e4e0d2]"
@@ -463,34 +559,186 @@ export default function Navbar({
           </div>
         )}
       </div>
+      )}
 
-      {/* Mobile Navigation Links Bar */}
-      <div className="flex md:hidden items-center justify-around border-t border-[#e4e0d2] py-2.5 px-4 text-[12px] text-[#3a382f] bg-[#faf8f4]">
-        <Link
-          href="/"
-          className={`transition-colors ${
-            activePage === "home" ? "text-[#0e0e0c] font-bold" : "hover:text-[#0e0e0c]"
-          }`}
-        >
-          Home
-        </Link>
-        <Link
-          href="/products"
-          className={`transition-colors ${
-            activePage === "products" ? "text-[#0e0e0c] font-bold" : "hover:text-[#0e0e0c]"
-          }`}
-        >
-          Products
-        </Link>
-        <Link
-          href="/account?tab=orders"
-          className={`transition-colors ${
-            activePage === "orders" ? "text-[#0e0e0c] font-bold" : "hover:text-[#0e0e0c]"
-          }`}
-        >
-          Orders
-        </Link>
-      </div>
+      {/* ================= HAMBURGER DRAWER & OVERLAY ================= */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/45 backdrop-blur-[2px] z-50 transition-opacity md:hidden animate-in fade-in duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={`fixed top-0 left-0 bottom-0 w-[280px] sm:w-[320px] bg-white z-50 shadow-2xl flex flex-col justify-between border-r border-[#e4e0d2] transition-transform duration-300 ease-out md:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        aria-label="Mobile Navigation"
+      >
+        <div>
+          {/* Drawer Top Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#e4e0d2] bg-[#faf8f4]">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
+            >
+              AVEN
+              <span className="not-italic text-[#2b2506] bg-[#e7c94a] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
+                .
+              </span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-8 h-8 rounded-full bg-white border border-[#e4e0d2] text-[#0e0e0c] hover:bg-[#f2efe6] flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Close menu"
+            >
+              <svg className="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          {/* User Requested: Home, Products, Orders, Profile within Hamburger */}
+          <nav className="p-4 space-y-1.5">
+            {/* Home */}
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all ${
+                activePage === "home"
+                  ? "bg-[#0e0e0c] text-white font-semibold shadow-xs"
+                  : "text-[#3a382f] hover:bg-[#faf8f4] hover:text-[#0e0e0c]"
+              }`}
+            >
+              <svg className="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <span>Home</span>
+            </Link>
+
+            {/* Products */}
+            <Link
+              href="/products"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all ${
+                activePage === "products"
+                  ? "bg-[#0e0e0c] text-white font-semibold shadow-xs"
+                  : "text-[#3a382f] hover:bg-[#faf8f4] hover:text-[#0e0e0c]"
+              }`}
+            >
+              <svg className="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+              <span>Products</span>
+            </Link>
+
+            {/* Orders */}
+            <Link
+              href="/account?tab=orders"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all ${
+                activePage === "orders"
+                  ? "bg-[#0e0e0c] text-white font-semibold shadow-xs"
+                  : "text-[#3a382f] hover:bg-[#faf8f4] hover:text-[#0e0e0c]"
+              }`}
+            >
+              <svg className="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              <span>Orders</span>
+            </Link>
+
+            {/* Profile */}
+            <Link
+              href="/account"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all ${
+                activePage === "account"
+                  ? "bg-[#0e0e0c] text-white font-semibold shadow-xs"
+                  : "text-[#3a382f] hover:bg-[#faf8f4] hover:text-[#0e0e0c]"
+              }`}
+            >
+              <svg className="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>Profile</span>
+            </Link>
+          </nav>
+
+          {/* Quick shortcuts for Wishlist & Cart in drawer */}
+          <div className="px-5 my-1">
+            <div className="h-px bg-[#e4e0d2]" />
+          </div>
+
+          <div className="px-4 py-2 space-y-1">
+            <Link
+              href="/wishlist"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] text-[#5a5744] hover:text-[#0e0e0c] hover:bg-[#faf8f4] transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                  <path d="M12 20s-7-4.4-9.3-8.7C1.2 8 3 5 6.3 5c2 0 3.4 1.1 4.2 2.5C11.3 6.1 12.7 5 14.7 5 18 5 19.8 8 18.3 11.3 16 15.6 12 20 12 20z" />
+                </svg>
+                <span>My Wishlist</span>
+              </div>
+              {wishlistCount > 0 && (
+                <span className="font-mono text-[11px] bg-[#0e0e0c] text-white px-2 py-0.5 rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/cart"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] text-[#5a5744] hover:text-[#0e0e0c] hover:bg-[#faf8f4] transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                  <circle cx="9" cy="20" r="1.4" />
+                  <circle cx="17" cy="20" r="1.4" />
+                  <path d="M3 4h2l2.4 12h10.2L20 7H6" />
+                </svg>
+                <span>Shopping Cart</span>
+              </div>
+              {cartCount > 0 && (
+                <span className="font-mono text-[11px] bg-[#e7c94a] text-[#2b2506] font-bold px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
+
+        {/* Drawer Bottom */}
+        <div className="p-5 border-t border-[#e4e0d2] bg-[#faf8f4] space-y-3">
+          <Link
+            href="/admin/login"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-[#8f8a7a] hover:text-[#0e0e0c] transition-colors"
+          >
+            <span>Admin Portal</span>
+            <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+          <p className="text-[11px] text-[#8f8a7a]">
+            AVEN — Premium Footwear Catalog
+          </p>
+        </div>
+      </aside>
     </header>
   );
 }
