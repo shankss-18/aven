@@ -30,9 +30,14 @@ function BootGlyph({ className = "w-[62%] stroke-[#0e0e0c] fill-none stroke-[1.3
   );
 }
 
-function formatPrice(val) {
-  const num = Number(val) || 0;
-  return `₹${Math.round(num).toLocaleString("en-IN")}`;
+function formatPrice(price, basePrice) {
+  if (price !== undefined && price !== null && Number(price) > 0) {
+    return `₹${Math.round(Number(price)).toLocaleString("en-IN")}`;
+  }
+  if (basePrice !== undefined && basePrice !== null && Number(basePrice) > 0) {
+    return `₹${Math.round(Number(basePrice) / 100).toLocaleString("en-IN")}`;
+  }
+  return "₹0";
 }
 
 export default function HomeProductSections({
@@ -183,7 +188,7 @@ export default function HomeProductSections({
           <div className="flex items-center justify-between text-[12.5px]">
             <span className="text-[#8f8a7a] truncate">{subLabel}</span>
             <span className="font-semibold text-[14px] text-[#0e0e0c] shrink-0 ml-2">
-              {formatPrice(product.price || product.base_price)}
+              {formatPrice(product.price, product.base_price)}
             </span>
           </div>
         </div>

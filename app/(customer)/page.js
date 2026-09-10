@@ -16,8 +16,9 @@ const FALLBACK_PRODUCTS = [
     id: 1,
     name: "Ridge Runner Sneaker",
     category: "sneaker",
-    sub: "Sneaker · White",
-    price: 650,
+    sub: "Sneaker · Men",
+    price: 6499,
+    base_price: 649900,
     image_url: "/products/ridge-runner.jpg",
     tileBg: "bg-[#eae5d5]",
   },
@@ -25,8 +26,9 @@ const FALLBACK_PRODUCTS = [
     id: 2,
     name: "Stealth Court Sneaker",
     category: "sneaker",
-    sub: "Boot · Chestnut",
-    price: 600,
+    sub: "Sneaker · Men",
+    price: 5999,
+    base_price: 599900,
     image_url: "/products/stealth-court.jpg",
     tileBg: "bg-[#e3dfd0]",
   },
@@ -34,8 +36,9 @@ const FALLBACK_PRODUCTS = [
     id: 3,
     name: "Urban Trail Sneaker",
     category: "sneaker",
-    sub: "Trainer · Grey",
-    price: 720,
+    sub: "Trainer · Men",
+    price: 7199,
+    base_price: 719900,
     image_url: "/products/urban-trail.jpg",
     tileBg: "bg-[#dfe2dc]",
   },
@@ -43,8 +46,9 @@ const FALLBACK_PRODUCTS = [
     id: 4,
     name: "Highland Chelsea Boot",
     category: "boot",
-    sub: "Boot · Black",
-    price: 900,
+    sub: "Boot · Men",
+    price: 8999,
+    base_price: 899900,
     image_url: "/products/highland-chelsea.jpg",
     tileBg: "bg-[#ece3d8]",
   },
@@ -64,16 +68,17 @@ async function getRecentProducts() {
           ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
           : "Footwear";
         const rawPrice = Number(row.base_price) || 0;
-        const formattedPrice =
-          rawPrice >= 10000 ? Math.round(rawPrice / 1000) : rawPrice || fallback.price;
+        // In DB, base_price is stored in paise (1 INR = 100 paise)
+        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : fallback.price;
         const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
 
         return {
           id: row.id,
           name: cleanName,
           category: row.category || fallback.category,
-          sub: fallback.sub || `${categoryLabel} · Premium`,
-          price: formattedPrice,
+          sub: `${categoryLabel} · Men`,
+          price: priceInRupees,
+          base_price: rawPrice || fallback.base_price,
           image_url: row.image_url || fallback.image_url,
           tileBg: fallback.tileBg || "bg-[#eae5d5]",
         };
@@ -105,16 +110,17 @@ async function getOfferProducts() {
           ? row.category.charAt(0).toUpperCase() + row.category.slice(1)
           : "Footwear";
         const rawPrice = Number(row.base_price) || 0;
-        const formattedPrice =
-          rawPrice >= 10000 ? Math.round(rawPrice / 1000) : rawPrice || fallback.price;
+        // In DB, base_price is stored in paise (1 INR = 100 paise)
+        const priceInRupees = rawPrice > 0 ? Math.round(rawPrice / 100) : fallback.price;
         const cleanName = row.name ? row.name.split(" | ")[0].trim() : fallback.name;
 
         return {
           id: row.id,
           name: cleanName,
           category: row.category || fallback.category,
-          sub: fallback.sub || `${categoryLabel} · Special`,
-          price: formattedPrice,
+          sub: `${categoryLabel} · Special`,
+          price: priceInRupees,
+          base_price: rawPrice || fallback.base_price,
           image_url: row.image_url || fallback.image_url,
           tileBg: fallback.tileBg || "bg-[#eae5d5]",
         };
