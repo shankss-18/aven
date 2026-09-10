@@ -2,21 +2,15 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
+import {
+  hexToColorName,
+  normalizeHex,
+  safePickerHex,
+  getColorHex,
+  FOOTWEAR_COLOR_PRESETS,
+} from "@/lib/colors";
 
 const STANDARD_SIZES = ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"];
-
-function getColorHex(colorName) {
-  const name = (colorName || "").toLowerCase();
-  if (name.includes("black")) return "#111111";
-  if (name.includes("white")) return "#f4f3ef";
-  if (name.includes("grey") || name.includes("gray")) return "#9a9a94";
-  if (name.includes("brown") || name.includes("chestnut")) return "#8a6b4a";
-  if (name.includes("oak") || name.includes("tan")) return "#c29b68";
-  if (name.includes("green") || name.includes("olive")) return "#3a4a3a";
-  if (name.includes("blue") || name.includes("navy")) return "#223344";
-  if (name.includes("fog") || name.includes("bone")) return "#e3dfd0";
-  return "#dcd7cb";
-}
 
 export default function EditProductPage() {
   const [product, setProduct] = useState(null);
@@ -32,8 +26,8 @@ export default function EditProductPage() {
 
   // 2-Step Variant & Size Configurator state (Step 1: Colors, Step 2: UK-6 to UK-10 Checkboxes & Stock)
   const [definedColors, setDefinedColors] = useState([]);
-  const [newColorInput, setNewColorInput] = useState("");
   const [newColorHexInput, setNewColorHexInput] = useState("#111111");
+  const [newColorInput, setNewColorInput] = useState(() => hexToColorName("#111111"));
 
   const router = useRouter();
   const params = useParams();
@@ -327,6 +321,29 @@ export default function EditProductPage() {
   };
 
 
+  const handleHexChange = (inputVal) => {
+    setNewColorHexInput(inputVal);
+    const clean = inputVal.replace(/^#/, "").trim();
+    if (clean.length === 3 || clean.length === 6) {
+      if (/^[0-9A-Fa-f]{3}$/.test(clean) || /^[0-9A-Fa-f]{6}$/.test(clean)) {
+        const fullHex = normalizeHex(clean);
+        const autoName = hexToColorName(fullHex);
+        setNewColorInput(autoName);
+      }
+    }
+  };
+
+  const handleNativeColorPickerChange = (colorValue) => {
+    const fullHex = colorValue.toUpperCase();
+    setNewColorHexInput(fullHex);
+    setNewColorInput(hexToColorName(fullHex));
+  };
+
+  const handleSelectPresetColor = (preset) => {
+    setNewColorHexInput(preset.hex);
+    setNewColorInput(preset.name);
+  };
+
   const handleAddColor = (e) => {
     e.preventDefault();
     const name = newColorInput.trim();
@@ -335,9 +352,11 @@ export default function EditProductPage() {
       alert(`Color "${name}" is already in your available colors.`);
       return;
     }
-    setDefinedColors([...definedColors, { name, hex: newColorHexInput }]);
-    setNewColorInput("");
-    setNewColorHexInput("#111111");
+    const cleanHex = normalizeHex(newColorHexInput);
+    setDefinedColors([...definedColors, { name, hex: cleanHex }]);
+    const nextHex = "#FFFFFF";
+    setNewColorHexInput(nextHex);
+    setNewColorInput(hexToColorName(nextHex));
   };
 
   const handleRemoveColor = async (colorName) => {
@@ -359,8 +378,9 @@ export default function EditProductPage() {
   };
 
   const handleUpdateColorHex = (colorName, newHex) => {
+    const cleanHex = normalizeHex(newHex);
     setDefinedColors(
-      definedColors.map((c) => (c.name.toLowerCase() === colorName.toLowerCase() ? { ...c, hex: newHex } : c))
+      definedColors.map((c) => (c.name.toLowerCase() === colorName.toLowerCase() ? { ...c, hex: cleanHex } : c))
     );
   };
 
@@ -800,44 +820,121 @@ export default function EditProductPage() {
             </h3>
           </div>
           <p className="text-xs text-[#8f8a7a]">
-            First, add and save the colors available for this sneaker (e.g. Green, Black, Brown). Each saved color will have its own UK 6 – UK 10 size manager below.
+            Enter a hex code (e.g. #111111, #C29B68) or pick a swatch. The color name automatically updates and can be customized.
           </p>
 
-          {/* Form to add a color */}
-          <form onSubmit={handleAddColor} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
-            <div className="flex items-center gap-2 flex-1">
-              <input
-                type="color"
-                value={newColorHexInput}
-                onChange={(e) => setNewColorHexInput(e.target.value)}
-                className="w-10 h-10 rounded-xl border border-[#e4e0d2] cursor-pointer p-0.5 bg-white shrink-0 shadow-2xs"
-                title="Pick Color Swatch"
-              />
-              <input
-                type="text"
-                required
-                placeholder="e.g. Olive Green, Obsidian Black"
-                value={newColorInput}
-                onChange={(e) => setNewColorInput(e.target.value)}
-                className="flex-1 border border-[#e4e0d2] focus:border-[#0e0e0c] rounded-xl px-3.5 py-2.5 text-[15px] sm:text-xs bg-white text-[#0e0e0c] outline-none"
-              />
+          {/* Form to add a color via Hex Code + Auto-updated Name */}
+          <form onSubmit={handleAddColor} className="space-y-3 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+              {/* Hex Code Input + Swatch Trigger */}
+              <div className="sm:col-span-4 flex flex-col gap-1">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a] flex items-center justify-between">
+                  <span>Hex Code</span>
+                  <span className="text-[10px] text-[#b0aba0] font-sans normal-case">Direct Hex Input</span>
+                </label>
+                <div className="flex items-center gap-2 bg-white border border-[#e4e0d2] focus-within:border-[#0e0e0c] rounded-xl px-2.5 py-2 shadow-2xs transition-colors">
+                  {/* Visual Swatch with click-to-pick overlay */}
+                  <div
+                    className="relative w-7 h-7 rounded-lg shrink-0 border border-black/15 overflow-hidden shadow-2xs flex items-center justify-center cursor-pointer group"
+                    style={{ backgroundColor: safePickerHex(newColorHexInput) }}
+                    title="Click to visually pick color"
+                  >
+                    <input
+                      type="color"
+                      value={safePickerHex(newColorHexInput)}
+                      onChange={(e) => handleNativeColorPickerChange(e.target.value)}
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                    />
+                    <svg
+                      className="w-3.5 h-3.5 text-white/90 drop-shadow group-hover:scale-110 transition-transform pointer-events-none"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M14 4l6 6M12 6L4 14v4h4l8-8M17 3l4 4" />
+                    </svg>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-[#8f8a7a]">#</span>
+                  <input
+                    type="text"
+                    required
+                    placeholder="111111"
+                    maxLength={7}
+                    value={newColorHexInput.startsWith("#") ? newColorHexInput.slice(1) : newColorHexInput}
+                    onChange={(e) => handleHexChange(e.target.value)}
+                    className="w-full font-mono text-xs font-bold uppercase text-[#0e0e0c] bg-transparent outline-none tracking-wider"
+                    title="Enter 3 or 6 hex characters (e.g. 111111, 3A4A3A, C29B68)"
+                  />
+                </div>
+              </div>
+
+              {/* Color Name Input (Auto-updates from Hex, editable) */}
+              <div className="sm:col-span-5 flex flex-col gap-1">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a] flex items-center justify-between">
+                  <span>Color Name</span>
+                  <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200/60 font-sans normal-case">
+                    Auto-updates from Hex
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Obsidian Black, Olive Green"
+                  value={newColorInput}
+                  onChange={(e) => setNewColorInput(e.target.value)}
+                  className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] rounded-xl px-3.5 py-2 text-[14px] sm:text-xs bg-white text-[#0e0e0c] outline-none shadow-2xs transition-colors h-[42px]"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="sm:col-span-3">
+                <button
+                  type="submit"
+                  className="w-full bg-[#0e0e0c] hover:bg-[#2b2506] text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 h-[42px]"
+                >
+                  <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Save Color</span>
+                </button>
+              </div>
             </div>
-            <button
-              type="submit"
-              className="bg-[#0e0e0c] hover:bg-[#2b2506] text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 shrink-0"
-            >
-              <span>+ Save Color</span>
-            </button>
+
+            {/* Quick Footwear Presets Swatches */}
+            <div className="pt-1 flex flex-wrap items-center gap-1.5">
+              <span className="text-[10.5px] font-mono uppercase tracking-wider text-[#8f8a7a] mr-1">
+                Quick Presets:
+              </span>
+              {FOOTWEAR_COLOR_PRESETS.map((preset) => (
+                <button
+                  key={preset.hex}
+                  type="button"
+                  onClick={() => handleSelectPresetColor(preset)}
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border border-[#e4e0d2] bg-white hover:border-[#0e0e0c] hover:bg-[#faf8f4] text-[11px] font-mono text-[#0e0e0c] transition-all cursor-pointer shadow-2xs"
+                  title={`Select ${preset.name} (${preset.hex})`}
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                    style={{ backgroundColor: preset.hex }}
+                  />
+                  <span>{preset.name}</span>
+                </button>
+              ))}
+            </div>
           </form>
 
           {/* Saved Colors Chips */}
-          <div className="pt-2 border-t border-[#e4e0d2]/70">
+          <div className="pt-3 border-t border-[#e4e0d2]/70">
             <div className="text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a] mb-2">
               Saved Available Colors ({definedColors.length}):
             </div>
             {definedColors.length === 0 ? (
               <div className="text-xs text-[#8f8a7a] italic py-1">
-                No colors saved yet. Choose a color and click &ldquo;+ Save Color&rdquo; above.
+                No colors saved yet. Choose a hex code and click &ldquo;+ Save Color&rdquo; above.
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
@@ -851,18 +948,21 @@ export default function EditProductPage() {
                       className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-[#e4e0d2] bg-white shadow-2xs"
                     >
                       <span
-                        className="w-3.5 h-3.5 rounded-full border border-black/20 shrink-0"
-                        style={{ backgroundColor: col.hex }}
+                        className="w-3.5 h-3.5 rounded-full border border-black/20 shrink-0 shadow-2xs"
+                        style={{ backgroundColor: safePickerHex(col.hex) }}
                       />
                       <input
                         type="color"
-                        value={col.hex}
+                        value={safePickerHex(col.hex)}
                         onChange={(e) => handleUpdateColorHex(col.name, e.target.value)}
                         title="Click to adjust hex code"
                         className="w-3.5 h-3.5 -ml-1 opacity-0 absolute cursor-pointer"
                       />
                       <span className="text-xs font-semibold text-[#0e0e0c]">{col.name}</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f2efe6] text-[#5a5744]">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f2efe6] text-[#5a5744] font-medium">
+                        {col.hex.toUpperCase()}
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#faf8f4] text-[#8f8a7a] border border-[#e4e0d2]/60">
                         {activeCount} {activeCount === 1 ? "size" : "sizes"}
                       </span>
                       <button
@@ -1188,12 +1288,12 @@ function ColorVariantConfigCard({ color, variants, onSave, onRemoveColor, onUpda
           <div className="relative">
             <span
               className="w-5 h-5 rounded-full border border-black/20 block shadow-2xs cursor-pointer"
-              style={{ backgroundColor: color.hex }}
-              title="Click to edit hex"
+              style={{ backgroundColor: safePickerHex(color.hex) }}
+              title="Click to visually adjust hex color"
             />
             <input
               type="color"
-              value={color.hex}
+              value={safePickerHex(color.hex)}
               onChange={(e) => onUpdateHex(color.name, e.target.value)}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             />
@@ -1203,8 +1303,8 @@ function ColorVariantConfigCard({ color, variants, onSave, onRemoveColor, onUpda
               <h4 className="font-display font-bold text-sm text-[#0e0e0c] uppercase tracking-wide">
                 {color.name}
               </h4>
-              <span className="text-[10.5px] font-mono text-[#8f8a7a]">
-                ({color.hex})
+              <span className="text-[10.5px] font-mono px-2 py-0.5 rounded bg-white border border-[#e4e0d2] text-[#5a5744] font-medium shadow-2xs">
+                {color.hex ? color.hex.toUpperCase() : ""}
               </span>
             </div>
             <span className="text-[11px] font-mono text-[#5a5744]">
