@@ -149,7 +149,7 @@ export default function AdminOrderDetailPage() {
             <button
               onClick={handleShip}
               disabled={shipping}
-              className="bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-2"
+              className="w-full sm:w-auto justify-center bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-2"
             >
               {shipping ? (
                 <>
@@ -187,7 +187,8 @@ export default function AdminOrderDetailPage() {
               </h2>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#e4e0d2] text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a]">
@@ -233,12 +234,43 @@ export default function AdminOrderDetailPage() {
               </table>
             </div>
 
+            {/* Mobile Cards View */}
+            <div className="block md:hidden divide-y divide-[#f2efe6]">
+              {items.map((item, i) => {
+                const unitPrice = item.price_at_purchase / 100;
+                const subtotal = (item.price_at_purchase * item.quantity) / 100;
+                return (
+                  <div key={i} className="p-4 space-y-2">
+                    <div className="flex justify-between items-start gap-2">
+                      <span className="font-medium text-[13.5px] text-[#0e0e0c] leading-snug">
+                        {item.name}
+                      </span>
+                      <span className="font-mono font-bold text-sm text-[#0e0e0c] shrink-0">
+                        ₹{subtotal.toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-mono bg-[#f2efe6] text-[#3a382f] px-2 py-0.5 rounded border border-[#e4e0d2]">
+                        Size: {item.size}
+                      </span>
+                      <span className="font-mono bg-[#f2efe6] text-[#3a382f] px-2 py-0.5 rounded border border-[#e4e0d2]">
+                        {item.color}
+                      </span>
+                      <span className="font-mono text-[#8f8a7a]">
+                        Qty: {item.quantity} × ₹{unitPrice.toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
             {/* Total Footer */}
-            <div className="p-5 border-t border-[#e4e0d2] bg-[#fbf9f4] flex justify-between items-center">
+            <div className="p-4 sm:p-5 border-t border-[#e4e0d2] bg-[#fbf9f4] flex justify-between items-center">
               <span className="text-xs font-mono uppercase tracking-wider text-[#8f8a7a]">
                 Order Total
               </span>
-              <span className="text-lg font-mono font-bold text-[#0e0e0c]">
+              <span className="text-base sm:text-lg font-mono font-bold text-[#0e0e0c]">
                 ₹{(order.total_amount / 100).toLocaleString("en-IN")}
               </span>
             </div>

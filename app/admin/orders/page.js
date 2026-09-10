@@ -77,60 +77,105 @@ export default function AdminOrdersListPage() {
             <p className="text-xs text-[#8f8a7a]">Customer orders will appear here once checkout is completed.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#fbf9f4] border-b border-[#e4e0d2] text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a]">
-                  <th className="px-5 py-3.5 font-medium">Order ID</th>
-                  <th className="px-5 py-3.5 font-medium">Customer</th>
-                  <th className="px-5 py-3.5 font-medium">Status</th>
-                  <th className="px-5 py-3.5 font-medium">Total</th>
-                  <th className="px-5 py-3.5 font-medium">AWB Track</th>
-                  <th className="px-5 py-3.5 font-medium">Date</th>
-                  <th className="px-5 py-3.5 text-right font-medium">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#f2efe6] text-sm">
-                {orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    onClick={() => router.push(`/admin/orders/${order.id}`)}
-                    className="hover:bg-[#faf8f2] transition-colors cursor-pointer group"
-                  >
-                    <td className="px-5 py-4 font-mono font-medium text-[#0e0e0c]">#{order.id}</td>
-                    <td className="px-5 py-4">
-                      <div className="font-medium text-[#0e0e0c]">{order.customer_name}</div>
-                      <div className="text-xs font-mono text-[#8f8a7a]">{order.customer_email}</div>
-                    </td>
-                    <td className="px-5 py-4">{renderStatusBadge(order.status)}</td>
-                    <td className="px-5 py-4 font-mono font-semibold text-[#0e0e0c]">
-                      ₹{(order.total_amount / 100).toLocaleString("en-IN")}
-                    </td>
-                    <td className="px-5 py-4">
-                      {order.shiprocket_awb ? (
-                        <span className="font-mono text-xs bg-[#f2efe6] text-[#3a382f] px-2 py-0.5 rounded border border-[#e4e0d2]">
-                          {order.shiprocket_awb}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-[#c9c4b3] font-mono">—</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4 text-xs font-mono text-[#8f8a7a]">
-                      {new Date(order.created_at).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
-                        <span>Details</span>
-                        <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </span>
-                    </td>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#fbf9f4] border-b border-[#e4e0d2] text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a]">
+                    <th className="px-5 py-3.5 font-medium">Order ID</th>
+                    <th className="px-5 py-3.5 font-medium">Customer</th>
+                    <th className="px-5 py-3.5 font-medium">Status</th>
+                    <th className="px-5 py-3.5 font-medium">Total</th>
+                    <th className="px-5 py-3.5 font-medium">AWB Track</th>
+                    <th className="px-5 py-3.5 font-medium">Date</th>
+                    <th className="px-5 py-3.5 text-right font-medium">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-[#f2efe6] text-sm">
+                  {orders.map((order) => (
+                    <tr
+                      key={order.id}
+                      onClick={() => router.push(`/admin/orders/${order.id}`)}
+                      className="hover:bg-[#faf8f2] transition-colors cursor-pointer group"
+                    >
+                      <td className="px-5 py-4 font-mono font-medium text-[#0e0e0c]">#{order.id}</td>
+                      <td className="px-5 py-4">
+                        <div className="font-medium text-[#0e0e0c]">{order.customer_name}</div>
+                        <div className="text-xs font-mono text-[#8f8a7a]">{order.customer_email}</div>
+                      </td>
+                      <td className="px-5 py-4">{renderStatusBadge(order.status)}</td>
+                      <td className="px-5 py-4 font-mono font-semibold text-[#0e0e0c]">
+                        ₹{(order.total_amount / 100).toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-5 py-4">
+                        {order.shiprocket_awb ? (
+                          <span className="font-mono text-xs bg-[#f2efe6] text-[#3a382f] px-2 py-0.5 rounded border border-[#e4e0d2]">
+                            {order.shiprocket_awb}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-[#c9c4b3] font-mono">—</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 text-xs font-mono text-[#8f8a7a]">
+                        {new Date(order.created_at).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
+                          <span>Details</span>
+                          <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24">
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards View */}
+            <div className="block md:hidden divide-y divide-[#f2efe6]">
+              {orders.map((order) => (
+                <div
+                  key={order.id}
+                  onClick={() => router.push(`/admin/orders/${order.id}`)}
+                  className="p-4 hover:bg-[#faf8f2] active:bg-[#f2efe6] transition-colors cursor-pointer space-y-2.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono font-bold text-[14px] text-[#0e0e0c]">#{order.id}</span>
+                    {renderStatusBadge(order.status)}
+                  </div>
+
+                  <div>
+                    <div className="font-medium text-[13.5px] text-[#0e0e0c]">{order.customer_name}</div>
+                    <div className="text-xs font-mono text-[#8f8a7a] truncate">{order.customer_email}</div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-[#f5f3eb] text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-sm text-[#0e0e0c]">
+                        ₹{(order.total_amount / 100).toLocaleString("en-IN")}
+                      </span>
+                      {order.shiprocket_awb && (
+                        <span className="font-mono text-[10px] bg-[#f2efe6] text-[#3a382f] px-1.5 py-0.5 rounded border border-[#e4e0d2]">
+                          AWB: {order.shiprocket_awb}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 text-[#8f8a7a]">
+                      <span className="font-mono text-[11px]">
+                        {new Date(order.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
+                      </span>
+                      <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

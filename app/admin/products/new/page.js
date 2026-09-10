@@ -102,7 +102,7 @@ export default function NewProductPage() {
       </div>
 
       {/* Form Card */}
-      <div className="bg-white border border-[#e4e0d2] rounded-2xl p-6 sm:p-8 shadow-xs">
+      <div className="bg-white border border-[#e4e0d2] rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-xs">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
           <div>
@@ -115,7 +115,7 @@ export default function NewProductPage() {
               placeholder="e.g. Oakwood Derby Shoe in Chestnut Brown"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
+              className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-[15px] sm:text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
             />
           </div>
 
@@ -129,7 +129,7 @@ export default function NewProductPage() {
               placeholder="Crafted with premium full-grain leather, hand-stitched welt, and cushioned insole..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3] resize-y"
+              className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-[15px] sm:text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3] resize-y"
             />
           </div>
 
@@ -142,7 +142,7 @@ export default function NewProductPage() {
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all cursor-pointer font-sans"
+                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-4 py-2.5 text-[15px] sm:text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all cursor-pointer font-sans"
               >
                 <option value="sneaker">Sneaker</option>
                 <option value="boot">Boot</option>
@@ -164,7 +164,7 @@ export default function NewProductPage() {
                   placeholder="2499.00"
                   value={form.basePrice}
                   onChange={(e) => setForm({ ...form, basePrice: e.target.value })}
-                  className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl pl-8 pr-4 py-2.5 text-sm font-mono bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
+                  className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl pl-8 pr-4 py-2.5 text-[15px] sm:text-sm font-mono bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
                 />
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Upload Dropzone / Button */}
-            <label className="border-2 border-dashed border-[#e4e0d2] hover:border-[#0e0e0c] rounded-2xl p-6 text-center bg-[#fcfbf9] hover:bg-[#faf8f2] transition-all cursor-pointer block group">
+            <label className="border-2 border-dashed border-[#e4e0d2] hover:border-[#0e0e0c] rounded-2xl p-5 sm:p-6 text-center bg-[#fcfbf9] hover:bg-[#faf8f2] transition-all cursor-pointer block group">
               <input
                 type="file"
                 multiple
@@ -198,7 +198,7 @@ export default function NewProductPage() {
                 className="hidden"
               />
               <div className="flex flex-col items-center justify-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-[#f2efe6] group-hover:bg-white border border-[#e4e0d2] flex items-center justify-center transition-colors">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#f2efe6] group-hover:bg-white border border-[#e4e0d2] flex items-center justify-center transition-colors">
                   <svg className="w-5 h-5 stroke-[#0e0e0c] fill-none stroke-[1.8]" viewBox="0 0 24 24">
                     <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
                     <circle cx="9" cy="9" r="2" />
@@ -255,16 +255,16 @@ export default function NewProductPage() {
           </div>
 
           {/* Form Actions */}
-          <div className="pt-4 border-t border-[#f2efe6] flex items-center justify-between">
-            <span className="text-xs font-mono text-[#8f8a7a]">
+          <div className="pt-4 border-t border-[#f2efe6] flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+            <span className="text-xs font-mono text-[#8f8a7a] self-start sm:self-auto">
               {uploadStatus}
             </span>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => router.push("/admin/products")}
-                className="px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider text-[#5a5744] hover:text-[#0e0e0c] hover:bg-[#f5f3eb] transition-colors cursor-pointer"
+                className="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider text-[#5a5744] hover:text-[#0e0e0c] hover:bg-[#f5f3eb] transition-colors cursor-pointer border border-[#e4e0d2] sm:border-transparent"
               >
                 Cancel
               </button>
@@ -272,7 +272,7 @@ export default function NewProductPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-2"
+                className="flex-1 sm:flex-initial justify-center bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-2"
               >
                 {submitting ? (
                   <>
@@ -280,7 +280,7 @@ export default function NewProductPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    <span>{uploadStatus || "Creating Listing..."}</span>
+                    <span>{uploadStatus || "Creating..."}</span>
                   </>
                 ) : (
                   <span>Create Product</span>

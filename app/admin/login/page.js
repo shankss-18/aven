@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-[#e4e0d2] rounded-2xl p-7 sm:p-9 shadow-xs">
+        <div className="bg-white border border-[#e4e0d2] rounded-2xl p-6 sm:p-9 shadow-xs">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3.5 py-2.5 rounded-xl flex items-start gap-2.5 font-medium animate-fadeIn">
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                 placeholder="admin@aven.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-3.5 py-2.5 text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
+                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-3.5 py-2.5 text-[15px] sm:text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
               />
             </div>
 
@@ -109,14 +109,14 @@ export default function AdminLoginPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-3.5 py-2.5 text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
+                className="w-full border border-[#e4e0d2] focus:border-[#0e0e0c] focus:ring-1 focus:ring-[#0e0e0c] rounded-xl px-3.5 py-2.5 text-[15px] sm:text-sm bg-[#fcfbf9] text-[#0e0e0c] outline-none transition-all placeholder:text-[#c9c4b3]"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full mt-2 bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white py-2.5 px-4 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
+              className="w-full mt-2 bg-[#0e0e0c] hover:bg-[#2b2506] disabled:opacity-60 text-white py-3 sm:py-2.5 px-4 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

@@ -105,7 +105,7 @@ export default function AdminCancellationsPage() {
           </div>
           <button
             onClick={load}
-            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[#5a5744] hover:text-[#0e0e0c] transition-colors px-3 py-1.5 rounded-lg border border-[#e4e0d2] bg-white cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[#5a5744] hover:text-[#0e0e0c] transition-colors px-3.5 py-2 rounded-lg border border-[#e4e0d2] bg-white cursor-pointer self-start sm:self-auto"
           >
             <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
               <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
@@ -117,7 +117,7 @@ export default function AdminCancellationsPage() {
       </div>
 
       {requests.length === 0 ? (
-        <div className="bg-white border border-[#e4e0d2] rounded-2xl p-14 text-center shadow-xs space-y-3">
+        <div className="bg-white border border-[#e4e0d2] rounded-xl sm:rounded-2xl p-10 sm:p-14 text-center shadow-xs space-y-3">
           <div className="w-10 h-10 rounded-full bg-[#f2efe6] flex items-center justify-center mx-auto">
             <svg className="w-5 h-5 stroke-[#8f8a7a] fill-none stroke-[1.6]" viewBox="0 0 24 24">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -132,9 +132,9 @@ export default function AdminCancellationsPage() {
           {requests.map((req) => (
             <div
               key={req.id}
-              className="bg-white border border-[#e4e0d2] rounded-2xl p-6 shadow-xs space-y-4"
+              className="bg-white border border-[#e4e0d2] rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xs space-y-4"
             >
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3.5">
                 {/* Left: Order Info */}
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -148,17 +148,17 @@ export default function AdminCancellationsPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[#0e0e0c]">{req.customer_name}</p>
-                    <p className="text-xs text-[#8f8a7a]">{req.customer_email}</p>
+                    <p className="text-xs text-[#8f8a7a] break-all">{req.customer_email}</p>
                   </div>
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center shrink-0">
                   <button
                     type="button"
                     onClick={() => handleAction(req.id, "reject")}
                     disabled={actionLoadingId === req.id}
-                    className="px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold border border-[#e4e0d2] bg-white text-[#5a5744] hover:bg-[#f2efe6] disabled:opacity-50 transition-colors cursor-pointer"
+                    className="w-full sm:w-auto justify-center px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold border border-[#e4e0d2] bg-white text-[#5a5744] hover:bg-[#f2efe6] disabled:opacity-50 transition-colors cursor-pointer text-center"
                   >
                     {actionLoadingId === req.id ? "…" : "Reject"}
                   </button>
@@ -166,12 +166,12 @@ export default function AdminCancellationsPage() {
                     type="button"
                     onClick={() => handleAction(req.id, "approve")}
                     disabled={actionLoadingId === req.id}
-                    className="px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+                    className="w-full sm:w-auto justify-center px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs text-center"
                   >
                     <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    {actionLoadingId === req.id ? "Processing…" : "Approve & Refund"}
+                    <span>{actionLoadingId === req.id ? "Processing…" : "Approve"}</span>
                   </button>
                 </div>
               </div>

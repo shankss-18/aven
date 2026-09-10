@@ -6,10 +6,10 @@ import Link from "next/link";
 
 function StatCard({ label, value, sub, accent = false }) {
   return (
-    <div className={`rounded-2xl border p-6 shadow-xs ${accent ? "bg-[#0e0e0c] border-[#0e0e0c] text-white" : "bg-white border-[#e4e0d2] text-[#0e0e0c]"}`}>
-      <p className={`text-[10.5px] font-mono uppercase tracking-wider mb-1 ${accent ? "text-[#a0a090]" : "text-[#8f8a7a]"}`}>{label}</p>
-      <p className={`font-display font-bold text-[32px] tracking-tight leading-none mb-1 ${accent ? "text-white" : "text-[#0e0e0c]"}`}>{value}</p>
-      {sub && <p className={`text-[12px] ${accent ? "text-[#a0a090]" : "text-[#8f8a7a]"}`}>{sub}</p>}
+    <div className={`rounded-xl sm:rounded-2xl border p-5 sm:p-6 shadow-xs ${accent ? "bg-[#0e0e0c] border-[#0e0e0c] text-white" : "bg-white border-[#e4e0d2] text-[#0e0e0c]"}`}>
+      <p className={`text-[10px] sm:text-[10.5px] font-mono uppercase tracking-wider mb-1 ${accent ? "text-[#a0a090]" : "text-[#8f8a7a]"}`}>{label}</p>
+      <p className={`font-display font-bold text-[24px] sm:text-[30px] lg:text-[32px] tracking-tight leading-none mb-1 ${accent ? "text-white" : "text-[#0e0e0c]"}`}>{value}</p>
+      {sub && <p className={`text-[11.5px] sm:text-[12px] ${accent ? "text-[#a0a090]" : "text-[#8f8a7a]"}`}>{sub}</p>}
     </div>
   );
 }
@@ -92,20 +92,20 @@ export default function AdminAnalyticsPage() {
         />
         {/* Pending Cancellations — links to cancellations page */}
         <Link href="/admin/cancellations" className="block">
-          <div className={`rounded-2xl border p-6 shadow-xs transition-all hover:shadow-md cursor-pointer ${
+          <div className={`rounded-xl sm:rounded-2xl border p-5 sm:p-6 shadow-xs transition-all hover:shadow-md cursor-pointer ${
             Number(data.pendingCancellations) > 0
               ? "bg-[#fff8f6] border-rose-300"
               : "bg-white border-[#e4e0d2]"
           }`}>
-            <p className="text-[10.5px] font-mono uppercase tracking-wider mb-1 text-[#8f8a7a]">
+            <p className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-wider mb-1 text-[#8f8a7a]">
               Pending Cancellations
             </p>
-            <p className={`font-display font-bold text-[32px] tracking-tight leading-none mb-1 ${
+            <p className={`font-display font-bold text-[24px] sm:text-[30px] lg:text-[32px] tracking-tight leading-none mb-1 ${
               Number(data.pendingCancellations) > 0 ? "text-rose-600" : "text-[#0e0e0c]"
             }`}>
               {data.pendingCancellations}
             </p>
-            <p className={`text-[12px] flex items-center gap-1 ${
+            <p className={`text-[11.5px] sm:text-[12px] flex items-center gap-1 ${
               Number(data.pendingCancellations) > 0 ? "text-rose-500" : "text-[#8f8a7a]"
             }`}>
               {Number(data.pendingCancellations) > 0 ? (
@@ -122,7 +122,7 @@ export default function AdminAnalyticsPage() {
       {/* Status Breakdown + Top Products row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Orders by Status */}
-        <div className="bg-white border border-[#e4e0d2] rounded-2xl p-6 shadow-xs space-y-5">
+        <div className="bg-white border border-[#e4e0d2] rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
           <div className="border-b border-[#f2efe6] pb-3">
             <h2 className="text-xs font-mono uppercase tracking-wider font-semibold text-[#0e0e0c]">
               Orders by Status
@@ -156,7 +156,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Top 5 Products */}
-        <div className="bg-white border border-[#e4e0d2] rounded-2xl p-6 shadow-xs space-y-5">
+        <div className="bg-white border border-[#e4e0d2] rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
           <div className="border-b border-[#f2efe6] pb-3">
             <h2 className="text-xs font-mono uppercase tracking-wider font-semibold text-[#0e0e0c]">
               Top 5 Best-Selling Products

@@ -89,7 +89,7 @@ export default function AdminProductsPage() {
 
         <button
           onClick={() => router.push("/admin/products/new")}
-          className="bg-[#0e0e0c] hover:bg-[#2b2506] text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
+          className="w-full sm:w-auto justify-center bg-[#0e0e0c] hover:bg-[#2b2506] text-white px-4 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
         >
           <svg className="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -115,101 +115,176 @@ export default function AdminProductsPage() {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#fbf9f4] border-b border-[#e4e0d2] text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a]">
-                  <th className="px-5 py-3.5 font-medium">Product</th>
-                  <th className="px-5 py-3.5 font-medium">Category</th>
-                  <th className="px-5 py-3.5 font-medium">Base Price</th>
-                  <th className="px-5 py-3.5 font-medium">Date Added</th>
-                  <th className="px-5 py-3.5 text-right font-medium">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#f2efe6] text-sm">
-                {products.map((p) => (
-                  <tr
-                    key={p.id}
-                    onClick={() => router.push(`/admin/products/${p.id}`)}
-                    className="hover:bg-[#faf8f2] transition-colors cursor-pointer group"
-                  >
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-lg bg-[#f2efe6] border border-[#e4e0d2] overflow-hidden shrink-0 flex items-center justify-center relative">
-                          {p.image_url ? (
-                            <img
-                              src={p.image_url}
-                              alt={p.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-[10px] font-mono text-[#8f8a7a]">No Pic</span>
-                          )}
-                        </div>
-                        <div className="min-w-0 max-w-xs sm:max-w-md">
-                          <div className="font-medium text-[#0e0e0c] truncate group-hover:underline">
-                            {p.name}
-                          </div>
-                          {p.description && (
-                            <div className="text-xs text-[#8f8a7a] truncate mt-0.5">
-                              {p.description}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono uppercase tracking-wider bg-[#f2efe6] text-[#3a382f] border border-[#e4e0d2]">
-                        {p.category}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 font-mono font-semibold text-[#0e0e0c]">
-                      ₹{(p.base_price / 100).toLocaleString("en-IN")}
-                    </td>
-                    <td className="px-5 py-4 text-xs font-mono text-[#8f8a7a]">
-                      {p.created_at
-                        ? new Date(p.created_at).toLocaleDateString("en-IN", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "—"}
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="inline-flex items-center gap-3">
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
-                          <span>Edit</span>
-                          <svg
-                            className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] transform group-hover:translate-x-0.5 transition-transform"
-                            viewBox="0 0 24 24"
-                          >
-                            <polyline points="9 18 15 12 9 6" />
-                          </svg>
-                        </span>
-
-                        <button
-                          type="button"
-                          onClick={(e) => handleDelete(e, p)}
-                          disabled={deletingId === p.id}
-                          className="p-1.5 rounded-lg text-[#8f8a7a] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50"
-                          title={`Delete ${p.name}`}
-                        >
-                          {deletingId === p.id ? (
-                            <span className="text-[10px] font-mono animate-pulse">...</span>
-                          ) : (
-                            <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </td>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#fbf9f4] border-b border-[#e4e0d2] text-[11px] font-mono uppercase tracking-wider text-[#8f8a7a]">
+                    <th className="px-5 py-3.5 font-medium">Product</th>
+                    <th className="px-5 py-3.5 font-medium">Category</th>
+                    <th className="px-5 py-3.5 font-medium">Base Price</th>
+                    <th className="px-5 py-3.5 font-medium">Date Added</th>
+                    <th className="px-5 py-3.5 text-right font-medium">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-[#f2efe6] text-sm">
+                  {products.map((p) => (
+                    <tr
+                      key={p.id}
+                      onClick={() => router.push(`/admin/products/${p.id}`)}
+                      className="hover:bg-[#faf8f2] transition-colors cursor-pointer group"
+                    >
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-lg bg-[#f2efe6] border border-[#e4e0d2] overflow-hidden shrink-0 flex items-center justify-center relative">
+                            {p.image_url ? (
+                              <img
+                                src={p.image_url}
+                                alt={p.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-[10px] font-mono text-[#8f8a7a]">No Pic</span>
+                            )}
+                          </div>
+                          <div className="min-w-0 max-w-xs sm:max-w-md">
+                            <div className="font-medium text-[#0e0e0c] truncate group-hover:underline">
+                              {p.name}
+                            </div>
+                            {p.description && (
+                              <div className="text-xs text-[#8f8a7a] truncate mt-0.5">
+                                {p.description}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono uppercase tracking-wider bg-[#f2efe6] text-[#3a382f] border border-[#e4e0d2]">
+                          {p.category}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 font-mono font-semibold text-[#0e0e0c]">
+                        ₹{(p.base_price / 100).toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-5 py-4 text-xs font-mono text-[#8f8a7a]">
+                        {p.created_at
+                          ? new Date(p.created_at).toLocaleDateString("en-IN", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : "—"}
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <div className="inline-flex items-center gap-3">
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-[#5a5744] group-hover:text-[#0e0e0c] transition-colors">
+                            <span>Edit</span>
+                            <svg
+                              className="w-3.5 h-3.5 stroke-current fill-none stroke-[2] transform group-hover:translate-x-0.5 transition-transform"
+                              viewBox="0 0 24 24"
+                            >
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                          </span>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleDelete(e, p)}
+                            disabled={deletingId === p.id}
+                            className="p-1.5 rounded-lg text-[#8f8a7a] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50"
+                            title={`Delete ${p.name}`}
+                          >
+                            {deletingId === p.id ? (
+                              <span className="text-[10px] font-mono animate-pulse">...</span>
+                            ) : (
+                              <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards View */}
+            <div className="block md:hidden divide-y divide-[#f2efe6]">
+              {products.map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => router.push(`/admin/products/${p.id}`)}
+                  className="p-4 hover:bg-[#faf8f2] active:bg-[#f2efe6] transition-colors cursor-pointer space-y-3"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 rounded-xl bg-[#f2efe6] border border-[#e4e0d2] overflow-hidden shrink-0 flex items-center justify-center relative">
+                      {p.image_url ? (
+                        <img
+                          src={p.image_url}
+                          alt={p.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-[9px] font-mono text-[#8f8a7a]">No Pic</span>
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10.5px] font-mono uppercase tracking-wider bg-[#f2efe6] text-[#3a382f] border border-[#e4e0d2]">
+                          {p.category}
+                        </span>
+                        <span className="font-mono font-bold text-sm text-[#0e0e0c]">
+                          ₹{(p.base_price / 100).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="font-medium text-[13.5px] text-[#0e0e0c] truncate">
+                        {p.name}
+                      </div>
+                      {p.description && (
+                        <div className="text-xs text-[#8f8a7a] truncate mt-0.5">
+                          {p.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-[#f5f3eb] text-xs">
+                    <span className="text-[11px] font-mono text-[#8f8a7a]">
+                      Added {p.created_at ? new Date(p.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "—"}
+                    </span>
+
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold text-[#0e0e0c] flex items-center gap-0.5">
+                        Edit
+                        <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleDelete(e, p)}
+                        disabled={deletingId === p.id}
+                        className="p-1 rounded text-rose-600 hover:bg-rose-50 transition-colors"
+                        aria-label={`Delete ${p.name}`}
+                      >
+                        <svg className="w-4 h-4 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
