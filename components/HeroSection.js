@@ -135,7 +135,7 @@ export default function HeroSection() {
           }
         }
 
-        /* Continuous Gold & Platinum Metallic Shimmer */
+        /* Continuous Ice Blue & Metallic Shimmer */
         @keyframes av-textShimmer {
           0%   { background-position: -200% center; }
           100% { background-position: 200% center; }
@@ -145,9 +145,9 @@ export default function HeroSection() {
             110deg,
             #0e0e0c 0%,
             #0e0e0c 32%,
-            #8a6b2d 46%,
-            #e7c94a 50%,
-            #8a6b2d 54%,
+            #5a7a8a 46%,
+            #9DB7C5 50%,
+            #5a7a8a 54%,
             #0e0e0c 68%,
             #0e0e0c 100%
           );
@@ -165,8 +165,8 @@ export default function HeroSection() {
 
         /* Underline dynamic glow */
         @keyframes av-markerGlow {
-          0%, 100% { opacity: 0.95; filter: drop-shadow(0 1px 4px rgba(231,201,74,0.3)); }
-          50%       { opacity: 1; filter: drop-shadow(0 2px 10px rgba(231,201,74,0.6)); }
+          0%, 100% { opacity: 0.95; filter: drop-shadow(0 1px 6px rgba(157,183,197,0.45)); }
+          50%       { opacity: 1; filter: drop-shadow(0 3px 12px rgba(157,183,197,0.8)); }
         }
 
         @keyframes av-underline {
@@ -273,10 +273,10 @@ export default function HeroSection() {
                 <span className="relative z-10 transition-transform duration-300 hover:-translate-y-1 cursor-default inline-block">
                   something
                 </span>
-                {/* Animated yellow slab underline with ambient breathing glow */}
+                {/* Animated slab underline with ambient breathing glow */}
                 <span
                   aria-hidden="true"
-                  className="av-marker-glow absolute bottom-[5%] left-0 h-[28%] bg-[#e7c94a] z-0"
+                  className="av-marker-glow absolute bottom-[5%] left-0 h-[28%] bg-[#9DB7C5] z-0"
                   style={{
                     animation: "av-underline 0.55s ease both 0.55s",
                     width: 0,
@@ -390,7 +390,7 @@ export default function HeroSection() {
             className="relative flex items-center justify-center w-full lg:w-1/2 order-1 lg:order-2 pt-2 pb-4 lg:py-0"
             style={{ minHeight: "clamp(240px, 40vw, 540px)" }}
           >
-            {/* Ambient luxury blue & gold glow behind shoe */}
+            {/* Ambient luxury blue glow behind shoe */}
             <div
               ref={glowRef}
               aria-hidden="true"
@@ -398,7 +398,7 @@ export default function HeroSection() {
               style={{
                 width: "80%",
                 height: "65%",
-                background: "radial-gradient(ellipse, rgba(147, 197, 253, 0.28) 0%, rgba(231, 201, 74, 0.14) 45%, transparent 70%)",
+                background: "radial-gradient(ellipse, rgba(147, 197, 253, 0.28) 0%, rgba(157, 183, 197, 0.22) 45%, transparent 70%)",
                 top: "15%",
                 left: "10%",
                 filter: "blur(50px)",
@@ -455,7 +455,7 @@ export default function HeroSection() {
               ref={badgeBottomRef}
               className="absolute bottom-4 left-2 sm:left-4 z-20 bg-[#0e0e0c] text-white rounded-2xl shadow-lg px-4 py-2 flex items-center gap-2 will-change-transform transition-transform duration-200"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#e7c94a] shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9DB7C5] shrink-0" />
               <span className="text-[11px] font-semibold font-mono uppercase tracking-widest">New Season</span>
             </div>
 
@@ -486,7 +486,7 @@ export default function HeroSection() {
                   className="inline-flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.2em] text-[#c9c4b3] px-6"
                 >
                   {item}
-                  <span className="text-[#e7c94a] text-[8px]">◆</span>
+                  <span className="text-[#9DB7C5] text-[8px]">◆</span>
                 </span>
               ))}
             </div>

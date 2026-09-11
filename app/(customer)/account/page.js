@@ -567,7 +567,7 @@ export default function AccountPage() {
                           <button
                             type="button"
                             onClick={handleOpenAddModal}
-                            className="text-[12.5px] font-semibold text-[#0e0e0c] bg-[#f2efe6] hover:bg-[#e7c94a]/30 px-3.5 py-1.5 rounded-full border border-[#e4e0d2] transition-colors flex items-center gap-1 cursor-pointer"
+                            className="text-[12.5px] font-semibold text-[#0e0e0c] bg-[#f2efe6] hover:bg-[#9DB7C5]/30 px-3.5 py-1.5 rounded-full border border-[#e4e0d2] transition-colors flex items-center gap-1 cursor-pointer"
                           >
                             <span>+</span> Add address
                           </button>
