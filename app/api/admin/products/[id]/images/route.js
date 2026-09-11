@@ -1,8 +1,6 @@
 import db from "@/lib/db";
 import cloudinary from "@/lib/cloudinary";
 import { withAdminAuth } from "@/lib/withAdminAuth";
-import fs from "fs/promises";
-import path from "path";
 
 export const GET = withAdminAuth(async (request, { params }) => {
   const { id } = await params;
@@ -51,33 +49,37 @@ export const POST = withAdminAuth(async (request, { params }) => {
             finalUrl = result.secure_url;
           }
         } catch (cloudErr) {
-          console.warn("Cloudinary upload failed, using local storage fallback:", cloudErr?.message || cloudErr);
+          console.warn("Cloudinary upload failed, using database storage fallback:", cloudErr?.message || cloudErr);
         }
       }
 
-      // Local storage fallback in public/uploads
-      if (!finalUrl) {
-        const rawExt = path.extname(file.name || "") || ".jpg";
-        const ext = rawExt.toLowerCase();
-        const safeExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"].includes(ext) ? ext : ".jpg";
-        const safeBase = (path.parse(file.name || "image").name || "img")
-          .replace(/[^a-zA-Z0-9_-]/g, "_")
-          .substring(0, 30);
-        const filename = `${safeBase}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}${safeExt}`;
+      if (finalUrl) {
+        // Cloudinary upload succeeded
+        await db.execute({
+          sql: "INSERT INTO product_images (product_id, url, image_url) VALUES (?, ?, ?)",
+          args: [id, finalUrl, finalUrl],
+        });
+        uploadedUrls.push(finalUrl);
+      } else {
+        // Safe database storage fallback (works 100% on Vercel & serverless without EROFS errors)
+        const mimeType = file.type || "image/jpeg";
+        const base64Data = buffer.toString("base64");
 
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
-        await fs.mkdir(uploadDir, { recursive: true });
-        const filePath = path.join(uploadDir, filename);
-        await fs.writeFile(filePath, buffer);
-        finalUrl = `/uploads/${filename}`;
+        const insertResult = await db.execute({
+          sql: "INSERT INTO product_images (product_id, url, image_url, data, mime_type) VALUES (?, '', '', ?, ?)",
+          args: [id, base64Data, mimeType],
+        });
+
+        const imageId = insertResult.lastInsertRowid;
+        finalUrl = `/api/images/${imageId}`;
+
+        await db.execute({
+          sql: "UPDATE product_images SET url = ?, image_url = ? WHERE id = ?",
+          args: [finalUrl, finalUrl, imageId],
+        });
+
+        uploadedUrls.push(finalUrl);
       }
-
-      await db.execute({
-        sql: "INSERT INTO product_images (product_id, url, image_url) VALUES (?, ?, ?)",
-        args: [id, finalUrl, finalUrl],
-      });
-
-      uploadedUrls.push(finalUrl);
     }
 
     if (uploadedUrls.length === 0) {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { compressImage } from "@/lib/compressImage";
 
 export default function NewProductPage() {
   const [form, setForm] = useState({
@@ -16,10 +17,11 @@ export default function NewProductPage() {
   const [uploadStatus, setUploadStatus] = useState("");
   const router = useRouter();
 
-  function handleFileSelect(e) {
+  async function handleFileSelect(e) {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-    const combined = [...selectedFiles, ...files];
+    const processed = await Promise.all(files.map((f) => compressImage(f)));
+    const combined = [...selectedFiles, ...processed];
     setSelectedFiles(combined);
     setPreviewUrls(combined.map((f) => URL.createObjectURL(f)));
   }

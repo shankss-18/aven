@@ -9,6 +9,7 @@ import {
   getColorHex,
   FOOTWEAR_COLOR_PRESETS,
 } from "@/lib/colors";
+import { compressImage } from "@/lib/compressImage";
 
 const STANDARD_SIZES = ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"];
 
@@ -212,7 +213,8 @@ export default function EditProductPage() {
     const token = localStorage.getItem("adminAuthToken");
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
-      formData.append("images", files[i]);
+      const processed = await compressImage(files[i]);
+      formData.append("images", processed);
     }
 
     try {
@@ -270,8 +272,9 @@ export default function EditProductPage() {
 
     setUploadingCover(true);
     const token = localStorage.getItem("adminAuthToken");
+    const processed = await compressImage(file);
     const formData = new FormData();
-    formData.append("images", file);
+    formData.append("images", processed);
     formData.append("isCover", "true");
 
     try {
