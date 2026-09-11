@@ -167,7 +167,7 @@ export default function Navbar({
           className="font-['Space_Grotesk'] font-bold text-[22px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
         >
           AVEN
-          <span className="not-italic text-[#0e0e0c] bg-[#9DB7C5] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
+          <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
             .
           </span>
         </Link>
@@ -350,7 +350,7 @@ export default function Navbar({
             {cartCount > 0 && (
               <span
                 id="nav-cart-badge"
-                className="absolute -top-1.5 -right-2 bg-[#9DB7C5] text-[#0e0e0c] font-mono text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-in fade-in zoom-in-75 duration-200 shadow-2xs"
+                className="absolute -top-1.5 -right-2 bg-[#b7e8f7] text-[#0e0e0c] font-mono text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-in fade-in zoom-in-75 duration-200 shadow-2xs"
               >
                 {cartCount}
               </span>
@@ -423,7 +423,7 @@ export default function Navbar({
             className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
           >
             AVEN
-            <span className="not-italic text-[#0e0e0c] bg-[#9DB7C5] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
+            <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
               .
             </span>
           </Link>
@@ -457,7 +457,7 @@ export default function Navbar({
             aria-label="Cart"
           >
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#9DB7C5] text-[#0e0e0c] font-mono text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -top-1 -right-1 bg-[#b7e8f7] text-[#0e0e0c] font-mono text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                 {cartCount}
               </span>
             )}
@@ -585,7 +585,7 @@ export default function Navbar({
               className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
             >
               AVEN
-              <span className="not-italic text-[#0e0e0c] bg-[#9DB7C5] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
+              <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
                 .
               </span>
             </Link>
@@ -714,7 +714,7 @@ export default function Navbar({
                 <span>Shopping Cart</span>
               </div>
               {cartCount > 0 && (
-                <span className="font-mono text-[11px] bg-[#9DB7C5] text-[#0e0e0c] font-bold px-2 py-0.5 rounded-full">
+                <span className="font-mono text-[11px] bg-[#b7e8f7] text-[#0e0e0c] font-bold px-2 py-0.5 rounded-full">
                   {cartCount}
                 </span>
               )}

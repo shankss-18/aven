@@ -713,35 +713,35 @@ export default function ProductDetailPage({ params }) {
                 <div className="flex items-center gap-3">
                   <span className="w-3">5</span>
                   <div className="flex-1 h-1.5 bg-[#e4e0d2] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#9DB7C5] rounded-full" style={{ width: "88%" }} />
+                    <div className="h-full bg-[#b7e8f7] rounded-full" style={{ width: "88%" }} />
                   </div>
                   <span className="w-5 text-right">28</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-3">4</span>
                   <div className="flex-1 h-1.5 bg-[#e4e0d2] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#9DB7C5] rounded-full" style={{ width: "30%" }} />
+                    <div className="h-full bg-[#b7e8f7] rounded-full" style={{ width: "30%" }} />
                   </div>
                   <span className="w-5 text-right">9</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-3">3</span>
                   <div className="flex-1 h-1.5 bg-[#e4e0d2] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#9DB7C5] rounded-full" style={{ width: "14%" }} />
+                    <div className="h-full bg-[#b7e8f7] rounded-full" style={{ width: "14%" }} />
                   </div>
                   <span className="w-5 text-right">4</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-3">2</span>
                   <div className="flex-1 h-1.5 bg-[#e4e0d2] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#9DB7C5] rounded-full" style={{ width: "4%" }} />
+                    <div className="h-full bg-[#b7e8f7] rounded-full" style={{ width: "4%" }} />
                   </div>
                   <span className="w-5 text-right">1</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-3">1</span>
                   <div className="flex-1 h-1.5 bg-[#e4e0d2] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#9DB7C5] rounded-full" style={{ width: "2%" }} />
+                    <div className="h-full bg-[#b7e8f7] rounded-full" style={{ width: "2%" }} />
                   </div>
                   <span className="w-5 text-right">0</span>
                 </div>
@@ -1080,7 +1080,7 @@ export default function ProductDetailPage({ params }) {
                             </td>
                             <td className="py-2.5 px-3.5 text-right">
                               {isCurrent ? (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#9DB7C5]">
+                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#b7e8f7]">
                                   Selected ✓
                                 </span>
                               ) : isAvailable ? (

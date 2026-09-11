@@ -130,7 +130,7 @@ export default function AdminLayout({ children }) {
             <span className="font-display tracking-[0.2em] font-semibold text-[16px] sm:text-[17px] text-[#0e0e0c]">
               AVEN
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0e0e0c] group-hover:bg-[#9DB7C5] transition-colors" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0e0e0c] group-hover:bg-[#b7e8f7] transition-colors" />
           </Link>
           <span className="text-[#c9c4b3]">/</span>
           <span className="font-mono text-[9.5px] sm:text-[10px] tracking-wider uppercase bg-[#f2efe6] text-[#5a5744] px-1.5 sm:px-2 py-0.5 rounded border border-[#e4e0d2] font-semibold">

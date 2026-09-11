@@ -328,7 +328,7 @@ export default function CheckoutPage() {
               href="/"
               className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c]"
             >
-              AVEN<span className="text-[#0e0e0c] bg-[#9DB7C5] px-1 rounded-[3px] ml-0.5">.</span>
+              AVEN<span className="text-[#0e0e0c] bg-[#b7e8f7] px-1 rounded-[3px] ml-0.5">.</span>
             </Link>
             <span className="text-[12px] text-[#8f8a7a] flex items-center gap-1.5 font-medium">
               <svg className="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">

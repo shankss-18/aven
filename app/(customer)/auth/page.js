@@ -130,7 +130,7 @@ export default function AuthPage() {
               href="/"
               className="font-['Space_Grotesk'] font-bold text-[24px] tracking-[0.01em] text-[#efeadb] flex items-center"
             >
-              AVEN<span className="not-italic text-[#0e0e0c] bg-[#9DB7C5] px-1 py-0.5 rounded-[3px] ml-1 leading-none text-[20px]">.</span>
+              AVEN<span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-1 leading-none text-[20px]">.</span>
             </Link>
           </div>
 

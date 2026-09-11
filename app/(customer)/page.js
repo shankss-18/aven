@@ -171,7 +171,7 @@ export default async function CustomerHomePage() {
 
           <div className="flex flex-wrap gap-8 sm:gap-12 md:justify-end">
             <div>
-              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#9DB7C5] block leading-none">
+              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#b7e8f7] block leading-none">
                 34
               </b>
               <span className="text-[11px] text-[#a8a394] uppercase tracking-[0.08em] block mt-2">
@@ -180,7 +180,7 @@ export default async function CustomerHomePage() {
             </div>
 
             <div>
-              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#9DB7C5] block leading-none">
+              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#b7e8f7] block leading-none">
                 2
               </b>
               <span className="text-[11px] text-[#a8a394] uppercase tracking-[0.08em] block mt-2">
@@ -189,7 +189,7 @@ export default async function CustomerHomePage() {
             </div>
 
             <div>
-              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#9DB7C5] block leading-none">
+              <b className="font-['Space_Grotesk'] text-3xl sm:text-[34px] font-bold text-[#b7e8f7] block leading-none">
                 8yr
               </b>
               <span className="text-[11px] text-[#a8a394] uppercase tracking-[0.08em] block mt-2">
