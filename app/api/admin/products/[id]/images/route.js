@@ -40,7 +40,10 @@ export const POST = withAdminAuth(async (request, { params }) => {
         try {
           const result = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
-              { folder: "aven-products" },
+              {
+                folder: "aven-products",
+                resource_type: "auto",
+              },
               (error, res) => (error ? reject(error) : resolve(res))
             );
             stream.end(buffer);
@@ -49,8 +52,11 @@ export const POST = withAdminAuth(async (request, { params }) => {
             finalUrl = result.secure_url;
           }
         } catch (cloudErr) {
-          console.warn("Cloudinary upload failed, using database storage fallback:", cloudErr?.message || cloudErr);
+          console.error("Cloudinary upload failed:", cloudErr?.message || cloudErr);
+          throw new Error(`Cloudinary upload failed: ${cloudErr?.message || "Check credentials"}`);
         }
+      } else {
+        throw new Error("Cloudinary credentials are not configured. Please verify CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your environment.");
       }
 
       if (finalUrl) {
@@ -59,25 +65,6 @@ export const POST = withAdminAuth(async (request, { params }) => {
           sql: "INSERT INTO product_images (product_id, url, image_url) VALUES (?, ?, ?)",
           args: [id, finalUrl, finalUrl],
         });
-        uploadedUrls.push(finalUrl);
-      } else {
-        // Safe database storage fallback (works 100% on Vercel & serverless without EROFS errors)
-        const mimeType = file.type || "image/jpeg";
-        const base64Data = buffer.toString("base64");
-
-        const insertResult = await db.execute({
-          sql: "INSERT INTO product_images (product_id, url, image_url, data, mime_type) VALUES (?, '', '', ?, ?)",
-          args: [id, base64Data, mimeType],
-        });
-
-        const imageId = insertResult.lastInsertRowid;
-        finalUrl = `/api/images/${imageId}`;
-
-        await db.execute({
-          sql: "UPDATE product_images SET url = ?, image_url = ? WHERE id = ?",
-          args: [finalUrl, finalUrl, imageId],
-        });
-
         uploadedUrls.push(finalUrl);
       }
     }
