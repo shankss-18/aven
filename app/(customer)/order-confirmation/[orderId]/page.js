@@ -37,7 +37,7 @@ export default function OrderConfirmationPage({ params }) {
               href="/"
               className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c]"
             >
-              AVEN<span className="text-[#0e0e0c] bg-[#b7e8f7] px-1 rounded-[3px] ml-0.5">.</span>
+              AVEN
             </Link>
             <span className="text-[12px] text-[#8f8a7a] font-medium">Order confirmation</span>
             <Link

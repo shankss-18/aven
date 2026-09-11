@@ -205,7 +205,7 @@ export default async function CustomerHomePage() {
         <div className="w-full grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1">
             <div className="font-['Space_Grotesk'] font-bold text-[20px] mb-2.5 text-[#0e0e0c]">
-              AVEN.
+              AVEN
             </div>
             <p className="text-[#8f8a7a] text-[13px] max-w-[240px] leading-relaxed">
               Considered footwear for men, made to be worn in.

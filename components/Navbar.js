@@ -167,9 +167,6 @@ export default function Navbar({
           className="font-['Space_Grotesk'] font-bold text-[22px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
         >
           AVEN
-          <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
-            .
-          </span>
         </Link>
 
         {/* Middle: Central Navigation Links */}
@@ -423,9 +420,6 @@ export default function Navbar({
             className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
           >
             AVEN
-            <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
-              .
-            </span>
           </Link>
         </div>
 
@@ -585,9 +579,6 @@ export default function Navbar({
               className="font-['Space_Grotesk'] font-bold text-[20px] tracking-[0.01em] text-[#0e0e0c] flex items-center"
             >
               AVEN
-              <span className="not-italic text-[#0e0e0c] bg-[#b7e8f7] px-1 py-0.5 rounded-[3px] ml-0.5 leading-none">
-                .
-              </span>
             </Link>
             <button
               type="button"

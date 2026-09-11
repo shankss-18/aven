@@ -44,11 +44,10 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-1 group">
+          <Link href="/" className="inline-flex items-center group">
             <span className="font-display tracking-[0.25em] font-semibold text-2xl text-[#0e0e0c]">
               AVEN
             </span>
-            <span className="w-2 h-2 rounded-full bg-[#0e0e0c] group-hover:bg-[#b7e8f7] transition-colors" />
           </Link>
           <div className="mt-2 flex items-center justify-center gap-2">
             <span className="font-mono text-[11px] tracking-wider uppercase bg-[#f2efe6] text-[#5a5744] px-2.5 py-0.5 rounded border border-[#e4e0d2] font-semibold">
